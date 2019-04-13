@@ -80,12 +80,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Yii\\Log\\Target\\File\\": "src"
+            "Yii\\Log\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Yii\\Log\\Target\\File\\Tests\\": "tests"
+            "Yii\\Log\\Tests\\": "tests"
         }
     },
     "extra": {

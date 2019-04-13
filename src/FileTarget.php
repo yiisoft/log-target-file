@@ -5,12 +5,11 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace Yii\Log\Target\File;
+namespace Yii\Log;
 
 use yii\exceptions\InvalidConfigException;
 use yii\helpers\FileHelper;
 use yii\helpers\Yii;
-use Yii\Log\Target;
 
 /**
  * FileTarget records log messages in a file.
