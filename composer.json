@@ -15,7 +15,7 @@
             "name": "Qiang Xue",
             "email": "qiang.xue@gmail.com",
             "homepage": "http://www.yiiframework.com/",
-            "role": "Founder and project lead"
+            "role": "Founder and former project lead"
         },
         {
             "name": "Alexander Makarov",
@@ -67,8 +67,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "yiisoft/log": "^3.0@dev",
-        "psr/log": "~1.1.0"
+        "yiisoft/log": "^3.0@dev"
     },
     "require-dev": {
         "yiisoft/yii-core": "^3.0@dev",
@@ -91,10 +90,6 @@
     "extra": {
         "branch-alias": {
             "dev-master": "3.0.x-dev"
-        },
-        "config-plugin": {
-            "params": "config/params.php",
-            "common": "config/common.php"
         }
     }
 }
