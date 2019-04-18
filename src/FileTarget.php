@@ -57,7 +57,7 @@ class FileTarget extends Target
      */
     public $dirMode = 0775;
     /**
-     * @var bool Whether to rotate log files by copy and truncate in contrast to rotation by
+     * @var bool|null Whether to rotate log files by copy and truncate in contrast to rotation by
      * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
      * systems which do not play well with rename on open files. Rotation by renaming however is
      * a bit faster.
@@ -68,10 +68,18 @@ class FileTarget extends Target
      * the PHP documentation. By setting rotateByCopy to `true` you can work
      * around this problem.
      */
-    public $rotateByCopy = true;
+    public $rotateByCopy;
+
+    private function isRunningOnWindows()
+    {
+        return DIRECTORY_SEPARATOR === '\\';
+    }
 
     public function __construct(string $logFile = '@runtime/logs/app.log')
     {
+        if ($this->rotateByCopy === null) {
+            $this->rotateByCopy = $this->isRunningOnWindows();
+        }
         $this->setLogFile($logFile);
     }
 
