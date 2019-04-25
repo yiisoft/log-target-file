@@ -5,13 +5,13 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace Yii\Log\Tests;
+namespace Yiisoft\Log\Tests;
 
 use Psr\Log\LogLevel;
 use yii\helpers\Yii;
 use yii\helpers\FileHelper;
-use Yii\Log\FileTarget;
-use Yii\Log\Logger;
+use Yiisoft\Log\FileTarget;
+use Yiisoft\Log\Logger;
 use yii\tests\TestCase;
 
 /**
