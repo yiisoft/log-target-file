@@ -8,32 +8,32 @@
 namespace Yiisoft\Log;
 
 /**
- * FileRotator takes care of rotating files
+ * FileRotator takes care of rotating files.
  *
- * The log file is specified via [[logFile]]. If the size of the log file exceeds
- * [[maxFileSize]] (in kilo-bytes), a rotation will be performed, which renames
- * the current log file by suffixing the file name with '.1'. All existing log
- * files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
- * The property [[maxLogFiles]] specifies how many history files to keep.
+ * If the size of the file exceeds [[maxFileSize]] (in kilo-bytes), a rotation will be performed, which renames
+ * the current file by suffixing the file name with '.1'.
+ *
+ * All existing files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
+ * The property [[maxFiles]] specifies how many history files to keep.
  */
 class FileRotator implements FileRotatorInterface
 {
     /**
-     * @var int maximum log file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
+     * @var int maximum file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
      */
     private $maxFileSize; // in KB
     /**
-     * @var int number of log files used for rotation. Defaults to 5.
+     * @var int number of files used for rotation. Defaults to 5.
      */
-    private $maxLogFiles;
+    private $maxFiles;
     /**
-     * @var int the permission to be set for newly created log files.
+     * @var int the permission to be set for newly created files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
     private $fileMode;
     /**
-     * @var bool|null Whether to rotate log files by copy and truncate in contrast to rotation by
+     * @var bool|null Whether to rotate files by copy and truncate in contrast to rotation by
      * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
      * systems which do not play well with rename on open files. Rotation by renaming however is
      * a bit faster.
@@ -46,10 +46,10 @@ class FileRotator implements FileRotatorInterface
      */
     private $rotateByCopy;
 
-    public function __construct(int $maxFileSize = 10240, int $maxLogFiles = 5, int $fileMode = null, $rotateByCopy = true)
+    public function __construct(int $maxFileSize = 10240, int $maxFiles = 5, int $fileMode = null, $rotateByCopy = true)
     {
         $this->maxFileSize = $maxFileSize;
-        $this->maxLogFiles = $maxLogFiles;
+        $this->maxFiles = $maxFiles;
         $this->fileMode = $fileMode;
         $this->rotateByCopy = $rotateByCopy && $this->isRunningOnWindows();
     }
@@ -80,57 +80,57 @@ class FileRotator implements FileRotatorInterface
 
 
     /**
-     * Sets the value of maxLogFiles.
-     * @param int $maxLogFiles
+     * Sets the value of maxFiles.
+     * @param int $maxFiles
      */
-    public function setMaxLogFiles($maxLogFiles): self
+    public function setMaxFiles($maxFiles): self
     {
-        $this->maxLogFiles = (int)$maxLogFiles;
-        if ($this->maxLogFiles < 1) {
-            $this->maxLogFiles = 1;
+        $this->maxFiles = (int)$maxFiles;
+        if ($this->maxFiles < 1) {
+            $this->maxFiles = 1;
         }
 
         return $this;
     }
 
     /**
-     * Gets the value of maxLogFiles.
+     * Gets the value of maxFiles.
      * @return int
      */
-    public function getMaxLogFiles(): int
+    public function getMaxFiles(): int
     {
-        return $this->maxLogFiles;
+        return $this->maxFiles;
     }
 
 
     /**
      * @inheritDoc
      */
-    public function rotateFiles(string $file): void
+    public function rotateFile(string $file): void
     {
-        for ($i = $this->maxLogFiles; $i >= 0; --$i) {
-            // $i == 0 is the original log file
+        for ($i = $this->maxFiles; $i >= 0; --$i) {
+            // $i == 0 is the original file
             $rotateFile = $file . ($i === 0 ? '' : '.' . $i);
             if (is_file($rotateFile)) {
                 // suppress errors because it's possible multiple processes enter into this section
-                if ($i === $this->maxLogFiles) {
+                if ($i === $this->maxFiles) {
                     @unlink($rotateFile);
                     continue;
                 }
                 $newFile = $file . '.' . ($i + 1);
                 $this->rotateByCopy ? $this->rotateByCopy($rotateFile, $newFile) : $this->rotateByRename($rotateFile, $newFile);
                 if ($i === 0) {
-                    $this->clearLogFile($rotateFile);
+                    $this->clearFile($rotateFile);
                 }
             }
         }
     }
 
     /***
-     * Clear log file without closing any other process open handles
+     * Clears the file without closing any other process open handles
      * @param string $rotateFile
      */
-    private function clearLogFile(string $rotateFile): void
+    private function clearFile(string $rotateFile): void
     {
         if ($filePointer = @fopen($rotateFile, 'a')) {
             @ftruncate($filePointer, 0);

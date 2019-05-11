@@ -71,6 +71,7 @@
     },
     "require-dev": {
         "yiisoft/yii-core": "^3.0@dev",
+        "yiisoft/cache": "^3.0@dev",
         "yiisoft/di": "^3.0@dev",
         "phpunit/phpunit": "^7.3",
         "hiqdev/composer-config-plugin": "^1.0@dev"
@@ -88,6 +89,9 @@
     "extra": {
         "branch-alias": {
             "dev-master": "3.0.x-dev"
+        },
+        "config-plugin": {
+            "common": "config/common.php"
         }
     }
 }

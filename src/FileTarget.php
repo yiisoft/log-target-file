@@ -26,18 +26,11 @@ class FileTarget extends Target
      */
     private $logFile;
     /**
-     * @var bool whether log files should be rotated when they reach a certain [[maxFileSize|maximum size]].
-     * Log rotation is enabled by default. This property allows you to disable it, when you have configured
-     * an external tools for log rotation on your server.
-     */
-    private $enableRotation;
-    /**
      * @var int the permission to be set for newly created log files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
     private $fileMode;
-
     /**
      * @var int the permission to be set for newly created directories.
      * This value will be used by PHP chmod() function. No umask will be applied.
@@ -51,13 +44,8 @@ class FileTarget extends Target
      */
     private $rotator;
 
-    public function __construct(string $logFile = '/tmp/app.log', bool $enableRotation = true, FileRotatorInterface $rotator = null)
+    public function __construct(string $logFile = '/tmp/app.log', FileRotatorInterface $rotator = null)
     {
-        $this->enableRotation = $enableRotation;
-
-        if (!$rotator) {
-            $rotator = new FileRotator();
-        }
         $this->rotator = $rotator;
 
         $this->setLogFile($logFile);
@@ -92,15 +80,15 @@ class FileTarget extends Target
         }
 
         @flock($fp, LOCK_EX);
-        if ($this->enableRotation) {
+        if ($this->rotator !== null) {
             // clear stat cache to ensure getting the real current file size and not a cached one
             // this may result in rotating twice when cached file size is used on subsequent calls
             clearstatcache();
         }
-        if ($this->enableRotation && @filesize($this->logFile) > $this->rotator->getMaxFileSize() * 1024) {
+        if ($this->rotator !== null && @filesize($this->logFile) > $this->rotator->getMaxFileSize() * 1024) {
             @flock($fp, LOCK_UN);
             @fclose($fp);
-            $this->rotator->rotateFiles($this->logFile);
+            $this->rotator->rotateFile($this->logFile);
             $writeResult = @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
             if ($writeResult === false) {
                 $error = error_get_last();
@@ -126,32 +114,6 @@ class FileTarget extends Target
         if ($this->fileMode !== null) {
             @chmod($this->logFile, $this->fileMode);
         }
-    }
-
-    /**
-     * @return bool
-     */
-    public function isRotationEnabled(): bool
-    {
-        return $this->enableRotation;
-    }
-
-    /**
-     * @return FileTarget
-     */
-    public function enableRotation(): self
-    {
-        $this->enableRotation = true;
-        return $this;
-    }
-
-    /**
-     * @return FileTarget
-     */
-    public function disableRotation(): self
-    {
-        $this->enableRotation = false;
-        return $this;
     }
 
     /**

@@ -53,7 +53,7 @@ class FileTargetTest extends \PHPUnit\Framework\TestCase
         mkdir(dirname($logFile), 0777, true);
 
         $rotator = new FileRotator(1024, 1, null, $rotateByCopy);
-        $fileTarget = new FileTarget($logFile, true, $rotator);
+        $fileTarget = new FileTarget($logFile, $rotator);
 
         $logger = new Logger([
             'file' => $fileTarget,

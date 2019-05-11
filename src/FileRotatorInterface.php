@@ -13,8 +13,8 @@ namespace Yiisoft\Log;
 interface FileRotatorInterface
 {
     /**
-     * Rotates log files.
+     * Rotates files.
      * @param string $file
      */
-    public function rotateFiles(string $file): void;
+    public function rotateFile(string $file): void;
 }
