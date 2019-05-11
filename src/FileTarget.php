@@ -7,10 +7,6 @@
 
 namespace Yiisoft\Log;
 
-use yii\exceptions\InvalidConfigException;
-use yii\helpers\FileHelper;
-use yii\helpers\Yii;
-
 /**
  * FileTarget records log messages in a file.
  *
@@ -25,137 +21,74 @@ use yii\helpers\Yii;
 class FileTarget extends Target
 {
     /**
-     * @var string log file path or [path alias](guide:concept-aliases). If not set, it will use the "@runtime/logs/app.log" file.
+     * @var string log file path. If not set, it will use the "/tmp/app.log" file.
      * The directory containing the log files will be automatically created if not existing.
      */
-    protected $_logFile;
+    private $logFile;
     /**
      * @var bool whether log files should be rotated when they reach a certain [[maxFileSize|maximum size]].
      * Log rotation is enabled by default. This property allows you to disable it, when you have configured
      * an external tools for log rotation on your server.
      */
-    public $enableRotation = true;
-    /**
-     * @var int maximum log file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
-     */
-    protected $_maxFileSize = 10240; // in KB
-    /**
-     * @var int number of log files used for rotation. Defaults to 5.
-     */
-    protected $_maxLogFiles = 5;
+    private $enableRotation;
     /**
      * @var int the permission to be set for newly created log files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
-    public $fileMode;
+    private $fileMode;
+
     /**
      * @var int the permission to be set for newly created directories.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * Defaults to 0775, meaning the directory is read-writable by owner and group,
      * but read-only for other users.
      */
-    public $dirMode = 0775;
+    private $dirMode = 0775;
+
     /**
-     * @var bool|null Whether to rotate log files by copy and truncate in contrast to rotation by
-     * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
-     * systems which do not play well with rename on open files. Rotation by renaming however is
-     * a bit faster.
-     *
-     * The problem with windows systems where the [rename()](http://www.php.net/manual/en/function.rename.php)
-     * function does not work with files that are opened by some process is described in a
-     * [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
-     * the PHP documentation. By setting rotateByCopy to `true` you can work
-     * around this problem.
+     * @var FileRotatorInterface
      */
-    public $rotateByCopy;
+    private $rotator;
 
-    private function isRunningOnWindows()
+    public function __construct(string $logFile = '/tmp/app.log', bool $enableRotation = true, FileRotatorInterface $rotator = null)
     {
-        return DIRECTORY_SEPARATOR === '\\';
-    }
+        $this->enableRotation = $enableRotation;
 
-    public function __construct(string $logFile = '@runtime/logs/app.log')
-    {
-        if ($this->rotateByCopy === null) {
-            $this->rotateByCopy = $this->isRunningOnWindows();
+        if (!$rotator) {
+            $rotator = new FileRotator();
         }
+        $this->rotator = $rotator;
+
         $this->setLogFile($logFile);
     }
 
     public function getLogFile(): string
     {
-        return $this->_logFile;
+        return $this->logFile;
     }
 
-    public function setLogFile($path): self
+    public function setLogFile(string $path): self
     {
-        $this->_logFile = Yii::getAlias($path);
+        $this->logFile = $path;
 
         return $this;
-    }
-
-    /**
-     * Sets the value of maxLogFiles.
-     * @param int $maxLogFiles
-     */
-    public function setMaxLogFiles($maxLogFiles): self
-    {
-        $this->_maxLogFiles = (int)$maxLogFiles;
-        if ($this->_maxLogFiles < 1) {
-            $this->_maxLogFiles = 1;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of maxLogFiles.
-     * @return int
-     */
-    public function getMaxLogFiles(): int
-    {
-        return $this->_maxLogFiles;
-    }
-
-    /**
-     * Sets the value of maxFileSize.
-     * @param int $maxFileSize
-     */
-    public function setMaxFileSize($maxFileSize): self
-    {
-        $this->_maxFileSize = $maxFileSize;
-        if ($this->_maxFileSize < 1) {
-            $this->_maxFileSize = 1;
-        }
-
-        return $this;
-    }
-
-    /**
-     * Gets the value of maxFileSize.
-     * @return int
-     */
-    public function getMaxFileSize(): int
-    {
-        return $this->_maxFileSize;
     }
 
     /**
      * Writes log messages to a file.
      * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
-     * @throws InvalidConfigException if unable to open the log file for writing
-     * @throws LogRuntimeException if unable to write complete log to file
+     * @throws LogRuntimeException if unable to open or write complete log to file
      */
     public function export(): void
     {
-        $logPath = dirname($this->_logFile);
-        FileHelper::createDirectory($logPath, $this->dirMode, true);
+        $logPath = dirname($this->logFile);
+        self::createDirectory($logPath, $this->dirMode);
 
-        $text = implode("\n", array_map([$this, 'formatMessage'], $this->messages)) . "\n";
+        $text = implode("\n", array_map([$this, 'formatMessage'], $this->getMessages())) . "\n";
 
-        if (($fp = fopen($this->_logFile, 'a')) === false) {
-            throw new InvalidConfigException("Unable to append to log file: {$this->_logFile}");
+        if (($fp = fopen($this->logFile, 'a')) === false) {
+            throw new LogRuntimeException("Unable to append to log file: {$this->logFile}");
         }
 
         @flock($fp, LOCK_EX);
@@ -164,11 +97,11 @@ class FileTarget extends Target
             // this may result in rotating twice when cached file size is used on subsequent calls
             clearstatcache();
         }
-        if ($this->enableRotation && @filesize($this->_logFile) > $this->_maxFileSize * 1024) {
+        if ($this->enableRotation && @filesize($this->logFile) > $this->rotator->getMaxFileSize() * 1024) {
             @flock($fp, LOCK_UN);
             @fclose($fp);
-            $this->rotateFiles();
-            $writeResult = @file_put_contents($this->_logFile, $text, FILE_APPEND | LOCK_EX);
+            $this->rotator->rotateFiles($this->logFile);
+            $writeResult = @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
             if ($writeResult === false) {
                 $error = error_get_last();
                 throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
@@ -191,66 +124,108 @@ class FileTarget extends Target
             @fclose($fp);
         }
         if ($this->fileMode !== null) {
-            @chmod($this->_logFile, $this->fileMode);
+            @chmod($this->logFile, $this->fileMode);
         }
     }
 
     /**
-     * Rotates log files.
+     * @return bool
      */
-    protected function rotateFiles(): void
+    public function isRotationEnabled(): bool
     {
-        $file = $this->logFile;
-        for ($i = $this->maxLogFiles; $i >= 0; --$i) {
-            // $i == 0 is the original log file
-            $rotateFile = $file . ($i === 0 ? '' : '.' . $i);
-            if (is_file($rotateFile)) {
-                // suppress errors because it's possible multiple processes enter into this section
-                if ($i === $this->maxLogFiles) {
-                    @unlink($rotateFile);
-                    continue;
-                }
-                $newFile = $this->logFile . '.' . ($i + 1);
-                $this->rotateByCopy ? $this->rotateByCopy($rotateFile, $newFile) : $this->rotateByRename($rotateFile, $newFile);
-                if ($i === 0) {
-                    $this->clearLogFile($rotateFile);
-                }
+        return $this->enableRotation;
+    }
+
+    /**
+     * @return FileTarget
+     */
+    public function enableRotation(): self
+    {
+        $this->enableRotation = true;
+        return $this;
+    }
+
+    /**
+     * @return FileTarget
+     */
+    public function disableRotation(): self
+    {
+        $this->enableRotation = false;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getFileMode(): int
+    {
+        return $this->fileMode;
+    }
+
+    /**
+     * @param int $fileMode
+     * @return FileTarget
+     */
+    public function setFileMode(int $fileMode): FileTarget
+    {
+        $this->fileMode = $fileMode;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDirMode(): int
+    {
+        return $this->dirMode;
+    }
+
+    /**
+     * @param int $dirMode
+     * @return FileTarget
+     */
+    public function setDirMode(int $dirMode): FileTarget
+    {
+        $this->dirMode = $dirMode;
+        return $this;
+    }
+
+    /**
+     * Creates a new directory.
+     *
+     * This method is similar to the PHP `mkdir()` function except that
+     * it uses `chmod()` to set the permission of the created directory
+     * in order to avoid the impact of the `umask` setting.
+     *
+     * @param string $path path of the directory to be created.
+     * @param int $mode the permission to be set for the created directory.
+     * @return bool whether the directory is created successfully
+     * @throws LogRuntimeException if the directory could not be created (i.e. php error due to parallel changes)
+     */
+    public static function createDirectory($path, $mode = 0775): bool
+    {
+        if (is_dir($path)) {
+            return true;
+        }
+        $parentDir = \dirname($path);
+        // recurse if parent dir does not exist and we are not at the root of the file system.
+        if ($parentDir !== $path && !is_dir($parentDir)) {
+            static::createDirectory($parentDir, $mode);
+        }
+        try {
+            if (!mkdir($path, $mode) && !is_dir($path)) {
+                return false;
+            }
+        } catch (\Exception $e) {
+            if (!is_dir($path)) {// https://github.com/yiisoft/yii2/issues/9288
+                throw new LogRuntimeException("Failed to create directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
             }
         }
-    }
-
-    /***
-     * Clear log file without closing any other process open handles
-     * @param string $rotateFile
-     */
-    private function clearLogFile(string $rotateFile): void
-    {
-        if ($filePointer = @fopen($rotateFile, 'a')) {
-            @ftruncate($filePointer, 0);
-            @fclose($filePointer);
+        try {
+            return chmod($path, $mode);
+        } catch (\Exception $e) {
+            throw new LogRuntimeException("Failed to change permissions for directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    /***
-     * Copy rotated file into new file
-     * @param string $rotateFile
-     * @param string $newFile
-     */
-    private function rotateByCopy(string $rotateFile, string $newFile): void
-    {
-        @copy($rotateFile, $newFile);
-        if ($this->fileMode !== null) {
-            @chmod($newFile, $this->fileMode);
-        }
-    }
-
-    /**
-     * Renames rotated file into new file
-     * @param string $rotateFile
-     * @param string $newFile
-     */
-    private function rotateByRename($rotateFile, $newFile): void
-    {
-        @rename($rotateFile, $newFile);
-    }
 }

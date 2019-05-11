@@ -8,22 +8,16 @@
 namespace Yiisoft\Log\Tests;
 
 use Psr\Log\LogLevel;
-use yii\helpers\Yii;
 use yii\helpers\FileHelper;
+use Yiisoft\Log\FileRotator;
 use Yiisoft\Log\FileTarget;
 use Yiisoft\Log\Logger;
-use yii\tests\TestCase;
 
 /**
  * @group log
  */
-class FileTargetTest extends TestCase
+class FileTargetTest extends \PHPUnit\Framework\TestCase
 {
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->mockApplication();
-    }
 
     public function booleanDataProvider()
     {
@@ -39,9 +33,9 @@ class FileTargetTest extends TestCase
      */
     public function testInit()
     {
-        $logFile = Yii::getAlias('@yii/tests/runtime/log/filetargettest.log');
+        $logFile = __DIR__ . '/runtime/log/filetargettest.log';
         FileHelper::removeDirectory(dirname($logFile));
-        new FileTarget(Yii::getAlias('@yii/tests/runtime/log/filetargettest.log'));
+        new FileTarget($logFile);
         $this->assertFileNotExists(
             dirname($logFile),
             'Log directory should not be created during init process'
@@ -54,14 +48,12 @@ class FileTargetTest extends TestCase
      */
     public function testRotate($rotateByCopy)
     {
-        $logFile = Yii::getAlias('@yii/tests/runtime/log/filetargettest.log');
+        $logFile = __DIR__ . '/runtime/log/filetargettest.log';
         FileHelper::removeDirectory(dirname($logFile));
         mkdir(dirname($logFile), 0777, true);
 
-
-        $fileTarget = (new FileTarget($logFile))
-        ->setMaxFileSize(1024)
-        ->setMaxLogFiles(1);
+        $rotator = new FileRotator(1024, 1, null, $rotateByCopy);
+        $fileTarget = new FileTarget($logFile, true, $rotator);
 
         $logger = new Logger([
             'file' => $fileTarget,
