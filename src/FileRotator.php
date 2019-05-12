@@ -21,7 +21,7 @@ class FileRotator implements FileRotatorInterface
     /**
      * @var int maximum file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
      */
-    private $maxFileSize; // in KB
+    private $maxFileSize;
     /**
      * @var int number of files used for rotation. Defaults to 5.
      */
@@ -46,12 +46,16 @@ class FileRotator implements FileRotatorInterface
      */
     private $rotateByCopy;
 
-    public function __construct(int $maxFileSize = 10240, int $maxFiles = 5, int $fileMode = null, $rotateByCopy = true)
+    public function __construct(int $maxFileSize = 10240, int $maxFiles = 5, int $fileMode = null, bool $rotateByCopy = null)
     {
         $this->maxFileSize = $maxFileSize;
         $this->maxFiles = $maxFiles;
         $this->fileMode = $fileMode;
-        $this->rotateByCopy = $rotateByCopy && $this->isRunningOnWindows();
+
+        $this->rotateByCopy = $rotateByCopy;
+        if ($this->rotateByCopy === null) {
+            $this->rotateByCopy = $this->isRunningOnWindows();
+        }
     }
 
     /**
@@ -59,7 +63,7 @@ class FileRotator implements FileRotatorInterface
      * @param int $maxFileSize
      * @return FileRotator
      */
-    public function setMaxFileSize($maxFileSize): self
+    public function setMaxFileSize(int $maxFileSize): self
     {
         $this->maxFileSize = $maxFileSize;
         if ($this->maxFileSize < 1) {
@@ -83,9 +87,9 @@ class FileRotator implements FileRotatorInterface
      * Sets the value of maxFiles.
      * @param int $maxFiles
      */
-    public function setMaxFiles($maxFiles): self
+    public function setMaxFiles(int $maxFiles): self
     {
-        $this->maxFiles = (int)$maxFiles;
+        $this->maxFiles = $maxFiles;
         if ($this->maxFiles < 1) {
             $this->maxFiles = 1;
         }
@@ -157,7 +161,7 @@ class FileRotator implements FileRotatorInterface
      * @param string $rotateFile
      * @param string $newFile
      */
-    private function rotateByRename($rotateFile, $newFile): void
+    private function rotateByRename(string $rotateFile, string $newFile): void
     {
         @rename($rotateFile, $newFile);
     }
