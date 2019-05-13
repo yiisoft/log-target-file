@@ -52,10 +52,7 @@ class FileRotator implements FileRotatorInterface
         $this->maxFiles = $maxFiles;
         $this->fileMode = $fileMode;
 
-        $this->rotateByCopy = $rotateByCopy;
-        if ($this->rotateByCopy === null) {
-            $this->rotateByCopy = $this->isRunningOnWindows();
-        }
+        $this->rotateByCopy = $rotateByCopy ?? $this->isRunningOnWindows();
     }
 
     /**
