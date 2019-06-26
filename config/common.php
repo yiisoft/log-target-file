@@ -1,8 +1,12 @@
 <?php
 
+use Yiisoft\Factory\Definitions\Reference;
+use Yiisoft\Log\FileRotator;
+use Yiisoft\Log\FileRotatorInterface;
+
 return [
-    \Yiisoft\Log\FileRotatorInterface::class => \yii\di\Reference::to('file-rotator'),
+    FileRotatorInterface::class => Reference::to('file-rotator'),
     'file-rotator' => [
-        '__class' => \Yiisoft\Log\FileRotator::class,
+        '__class' => FileRotator::class,
     ],
 ];
