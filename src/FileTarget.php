@@ -1,10 +1,4 @@
 <?php
-/**
- * @link http://www.yiiframework.com/
- * @copyright Copyright (c) 2008 Yii Software LLC
- * @license http://www.yiiframework.com/license/
- */
-
 namespace Yiisoft\Log;
 
 /**
@@ -15,8 +9,6 @@ namespace Yiisoft\Log;
  * the current log file by suffixing the file name with '.1'. All existing log
  * files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
  * The property [[maxLogFiles]] specifies how many history files to keep.
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
  */
 class FileTarget extends Target
 {
