@@ -1,8 +1,9 @@
 <?php
 namespace Yiisoft\Log\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
-use yii\helpers\FileHelper;
+use Yiisoft\Files\FileHelper;
 use Yiisoft\Log\FileRotator;
 use Yiisoft\Log\FileTarget;
 use Yiisoft\Log\Logger;
@@ -10,10 +11,9 @@ use Yiisoft\Log\Logger;
 /**
  * @group log
  */
-class FileTargetTest extends \PHPUnit\Framework\TestCase
+final class FileTargetTest extends TestCase
 {
-
-    public function booleanDataProvider()
+    public function booleanDataProvider(): array
     {
         return [
             [true],
@@ -25,7 +25,7 @@ class FileTargetTest extends \PHPUnit\Framework\TestCase
      * Tests that log directory isn't created during init process
      * @see https://github.com/yiisoft/yii2/issues/15662
      */
-    public function testInit()
+    public function testInit(): void
     {
         $logFile = __DIR__ . '/runtime/log/filetargettest.log';
         FileHelper::removeDirectory(dirname($logFile));
@@ -40,7 +40,7 @@ class FileTargetTest extends \PHPUnit\Framework\TestCase
      * @dataProvider booleanDataProvider
      * @param bool $rotateByCopy
      */
-    public function testRotate($rotateByCopy)
+    public function testRotate(bool $rotateByCopy): void
     {
         $logFile = __DIR__ . '/runtime/log/filetargettest.log';
         FileHelper::removeDirectory(dirname($logFile));
