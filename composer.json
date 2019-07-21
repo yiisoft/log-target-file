@@ -20,10 +20,10 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "yiisoft/log": "^3.0@dev"
+        "yiisoft/log": "^3.0@dev",
+        "yiisoft/files": "^3.0@dev"
     },
     "require-dev": {
-        "yiisoft/files": "^3.0@dev",
         "phpunit/phpunit": "^7.3"
     },
     "autoload": {
