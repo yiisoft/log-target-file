@@ -1,5 +1,5 @@
 <?php
-namespace Yiisoft\Log;
+namespace Yiisoft\Log\Target\File;
 
 /**
  * Interface for FileRotator

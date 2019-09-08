@@ -1,11 +1,11 @@
 <?php
-namespace Yiisoft\Log\Tests;
+namespace Yiisoft\Log\Target\File\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Yiisoft\Files\FileHelper;
-use Yiisoft\Log\FileRotator;
-use Yiisoft\Log\FileTarget;
+use Yiisoft\Log\Target\File\FileRotator;
+use Yiisoft\Log\Target\File\FileTarget;
 use Yiisoft\Log\Logger;
 
 /**

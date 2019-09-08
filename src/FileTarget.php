@@ -1,7 +1,9 @@
 <?php
-namespace Yiisoft\Log;
+namespace Yiisoft\Log\Target\File;
 
 use Yiisoft\Files\FileHelper;
+use Yiisoft\Log\LogRuntimeException;
+use Yiisoft\Log\Target;
 
 /**
  * FileTarget records log messages in a file.
@@ -31,7 +33,7 @@ class FileTarget extends Target
      * Defaults to 0775, meaning the directory is read-writable by owner and group,
      * but read-only for other users.
      */
-    private $dirMode = 0775;
+    private $dirMode;
 
     /**
      * @var FileRotatorInterface
@@ -62,7 +64,7 @@ class FileTarget extends Target
 
         $text = implode("\n", array_map([$this, 'formatMessage'], $this->getMessages())) . "\n";
 
-        if (($fp = fopen($this->logFile, 'a')) === false) {
+        if (($fp = fopen($this->logFile, 'ab')) === false) {
             throw new LogRuntimeException("Unable to append to log file: {$this->logFile}");
         }
 
