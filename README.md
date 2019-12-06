@@ -12,6 +12,6 @@ This library provides the File target for the [yiisoft/log] library.
 
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/log-target-file/v/stable.png)](https://packagist.org/packages/yiisoft/log-target-file)
 [![Total Downloads](https://poser.pugx.org/yiisoft/log-target-file/downloads.png)](https://packagist.org/packages/yiisoft/log-target-file)
-[![Build Status](https://travis-ci.org/yiisoft/log-target-file.svg?branch=master)](https://travis-ci.org/yiisoft/log-target-file)
+[![Build Status](https://travis-ci.com/yiisoft/log-target-file.svg?branch=master)](https://travis-ci.com/yiisoft/log-target-file)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/yiisoft/log-target-file/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/yiisoft/log-target-file/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/yiisoft/log-target-file/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/yiisoft/log-target-file/?branch=master)
