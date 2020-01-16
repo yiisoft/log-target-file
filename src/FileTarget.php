@@ -60,7 +60,10 @@ class FileTarget extends Target
     public function export(): void
     {
         $logPath = dirname($this->logFile);
-        FileHelper::createDirectory($logPath, $this->dirMode);
+
+        if (!file_exists($logPath)) {
+            FileHelper::createDirectory($logPath, $this->dirMode);
+        }
 
         $text = implode("\n", array_map([$this, 'formatMessage'], $this->getMessages())) . "\n";
 
