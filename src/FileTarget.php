@@ -1,4 +1,5 @@
 <?php
+
 namespace Yiisoft\Log\Target\File;
 
 use Yiisoft\Files\FileHelper;
