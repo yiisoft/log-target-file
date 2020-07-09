@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yiisoft\Log\Target\File;
 
 use Yiisoft\Files\FileHelper;
@@ -21,25 +23,25 @@ class FileTarget extends Target
      * @var string log file path. If not set, it will use the "/tmp/app.log" file.
      * The directory containing the log files will be automatically created if not existing.
      */
-    private $logFile;
+    private string $logFile;
     /**
      * @var int the permission to be set for newly created log files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
-    private $fileMode;
+    private ?int $fileMode;
     /**
      * @var int the permission to be set for newly created directories.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * Defaults to 0775, meaning the directory is read-writable by owner and group,
      * but read-only for other users.
      */
-    private $dirMode;
+    private int $dirMode;
 
     /**
      * @var FileRotatorInterface
      */
-    private $rotator;
+    private ?FileRotatorInterface $rotator;
 
     public function __construct(
         string $logFile = '/tmp/app.log',
@@ -83,29 +85,27 @@ class FileTarget extends Target
             @fclose($fp);
             $this->rotator->rotateFile($this->logFile);
             $writeResult = @file_put_contents($this->logFile, $text, FILE_APPEND | LOCK_EX);
-            if ($writeResult === false) {
-                $error = error_get_last();
-                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
-            }
-            $textSize = strlen($text);
-            if ($writeResult < $textSize) {
-                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
-            }
+            $this->checkWrittenResult($writeResult, $text);
         } else {
             $writeResult = @fwrite($fp, $text);
-            if ($writeResult === false) {
-                $error = error_get_last();
-                throw new LogRuntimeException("Unable to export log through file!: {$error['message']}");
-            }
-            $textSize = strlen($text);
-            if ($writeResult < $textSize) {
-                throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
-            }
+            $this->checkWrittenResult($writeResult, $text);
             @flock($fp, LOCK_UN);
             @fclose($fp);
         }
         if ($this->fileMode !== null) {
             @chmod($this->logFile, $this->fileMode);
+        }
+    }
+
+    private function checkWrittenResult($writeResult, string $text): void
+    {
+        if ($writeResult === false) {
+            $error = error_get_last();
+            throw new LogRuntimeException("Unable to export log through file: {$error['message']}");
+        }
+        $textSize = strlen($text);
+        if ($writeResult < $textSize) {
+            throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
         }
     }
 }

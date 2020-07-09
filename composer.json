@@ -20,12 +20,12 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "yiisoft/log": "^3.0@dev",
+        "php": ">=7.4",
         "yiisoft/files": "^3.0@dev",
-        "php": "^7.4"
+        "yiisoft/log": "^3.0@dev"
     },
     "require-dev": {
-        "phpunit/phpunit": "^9.0"
+        "phpunit/phpunit": "^9.3"
     },
     "autoload": {
         "psr-4": {

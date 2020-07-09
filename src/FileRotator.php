@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\File;
 
@@ -16,17 +17,17 @@ class FileRotator implements FileRotatorInterface
     /**
      * @var int maximum file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
      */
-    private $maxFileSize;
+    private int $maxFileSize;
     /**
      * @var int number of files used for rotation. Defaults to 5.
      */
-    private $maxFiles;
+    private int $maxFiles;
     /**
      * @var int the permission to be set for newly created files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
-    private $fileMode;
+    private ?int $fileMode;
     /**
      * @var bool|null Whether to rotate files by copy and truncate in contrast to rotation by
      * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
@@ -39,12 +40,12 @@ class FileRotator implements FileRotatorInterface
      * the PHP documentation. By setting rotateByCopy to `true` you can work
      * around this problem.
      */
-    private $rotateByCopy;
+    private ?bool $rotateByCopy;
 
     public function __construct(int $maxFileSize = 10240, int $maxFiles = 5, int $fileMode = null, bool $rotateByCopy = null)
     {
-        $this->maxFileSize = $maxFileSize;
-        $this->maxFiles = $maxFiles;
+        $this->setMaxFileSize($maxFileSize);
+        $this->setMaxFiles($maxFiles);
         $this->fileMode = $fileMode;
 
         $this->rotateByCopy = $rotateByCopy ?? $this->isRunningOnWindows();
@@ -66,18 +67,18 @@ class FileRotator implements FileRotatorInterface
     }
 
     /**
-     * Gets the value of maxFileSize.
-     * @return int
+     * @inheritDoc
      */
     public function getMaxFileSize(): int
     {
         return $this->maxFileSize;
     }
 
-
     /**
      * Sets the value of maxFiles.
+     *
      * @param int $maxFiles
+     * @return FileRotator
      */
     public function setMaxFiles(int $maxFiles): self
     {
@@ -98,7 +99,6 @@ class FileRotator implements FileRotatorInterface
         return $this->maxFiles;
     }
 
-
     /**
      * @inheritDoc
      */
@@ -114,7 +114,12 @@ class FileRotator implements FileRotatorInterface
                     continue;
                 }
                 $newFile = $file . '.' . ($i + 1);
-                $this->rotateByCopy ? $this->rotateByCopy($rotateFile, $newFile) : $this->rotateByRename($rotateFile, $newFile);
+                if ($this->rotateByCopy) {
+                    $this->rotateByCopy($rotateFile, $newFile);
+                } else {
+                    $this->rotateByRename($rotateFile, $newFile);
+                }
+
                 if ($i === 0) {
                     $this->clearFile($rotateFile);
                 }
@@ -128,7 +133,7 @@ class FileRotator implements FileRotatorInterface
      */
     private function clearFile(string $rotateFile): void
     {
-        if ($filePointer = @fopen($rotateFile, 'a')) {
+        if ($filePointer = @fopen($rotateFile, 'ab')) {
             @ftruncate($filePointer, 0);
             @fclose($filePointer);
         }
