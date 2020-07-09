@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit bootstrap="./tests/bootstrap.php"
+<phpunit
+    bootstrap="vendor/autoload.php"
     backupGlobals="true"
     colors="true"
     verbose="true"
@@ -9,6 +10,9 @@
     convertNoticesToExceptions="true"
     convertWarningsToExceptions="true"
     stopOnFailure="false">
+    <php>
+        <ini name="error_reporting" value="-1" />
+    </php>
     <testsuites>
         <testsuite name="Yii Log - File Target tests">
             <directory>./tests</directory>
