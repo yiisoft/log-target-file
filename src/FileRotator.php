@@ -24,7 +24,7 @@ class FileRotator implements FileRotatorInterface
      */
     private int $maxFiles;
     /**
-     * @var int the permission to be set for newly created files.
+     * @var int|null the permission to be set for newly created files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
@@ -144,7 +144,6 @@ class FileRotator implements FileRotatorInterface
      * Copy rotated file into new file
      * @param string $rotateFile
      * @param string $newFile
-     * @param int|null $fileMode
      */
     private function rotateByCopy(string $rotateFile, string $newFile): void
     {

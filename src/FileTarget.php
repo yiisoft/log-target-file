@@ -25,7 +25,7 @@ class FileTarget extends Target
      */
     private string $logFile;
     /**
-     * @var int the permission to be set for newly created log files.
+     * @var int|null the permission to be set for newly created log files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
@@ -38,9 +38,6 @@ class FileTarget extends Target
      */
     private int $dirMode;
 
-    /**
-     * @var FileRotatorInterface
-     */
     private ?FileRotatorInterface $rotator;
 
     public function __construct(
