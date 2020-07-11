@@ -17,7 +17,7 @@ interface FileRotatorInterface
     public function rotateFile(string $file): void;
 
     /**
-     * Gets the value of maxFileSize.
+     * Get maximum file size, in kilo-bytes.
      *
      * @return int
      */

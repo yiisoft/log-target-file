@@ -7,11 +7,11 @@ namespace Yiisoft\Log\Target\File;
 /**
  * FileRotator takes care of rotating files.
  *
- * If the size of the file exceeds [[maxFileSize]] (in kilo-bytes), a rotation will be performed, which renames
+ * If the size of the file exceeds {@see maxFileSize} (in kilo-bytes), a rotation will be performed, which renames
  * the current file by suffixing the file name with '.1'.
  *
  * All existing files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
- * The property [[maxFiles]] specifies how many history files to keep.
+ * The property {@see maxFiles} specifies how many history files to keep.
  */
 class FileRotator implements FileRotatorInterface
 {
@@ -67,9 +67,6 @@ class FileRotator implements FileRotatorInterface
         return $this;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function getMaxFileSize(): int
     {
         return $this->maxFileSize;
@@ -79,7 +76,7 @@ class FileRotator implements FileRotatorInterface
      * Sets the value of maxFiles.
      *
      * @param int $maxFiles
-     * @return FileRotator
+     * @return $this
      */
     public function setMaxFiles(int $maxFiles): self
     {
@@ -100,9 +97,6 @@ class FileRotator implements FileRotatorInterface
         return $this->maxFiles;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function rotateFile(string $file): void
     {
         for ($i = $this->maxFiles; $i >= 0; --$i) {

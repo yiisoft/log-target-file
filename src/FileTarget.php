@@ -11,11 +11,11 @@ use Yiisoft\Log\Target;
 /**
  * FileTarget records log messages in a file.
  *
- * The log file is specified via [[logFile]]. If the size of the log file exceeds
- * [[maxFileSize]] (in kilo-bytes), a rotation will be performed, which renames
+ * The log file is specified via {@see logFile}. If the size of the log file exceeds
+ * {@see maxFileSize} (in kilo-bytes), a rotation will be performed, which renames
  * the current log file by suffixing the file name with '.1'. All existing log
  * files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
- * The property [[maxLogFiles]] specifies how many history files to keep.
+ * The property {@see maxLogFiles} specifies how many history files to keep.
  */
 class FileTarget extends Target
 {
@@ -54,7 +54,6 @@ class FileTarget extends Target
 
     /**
      * Writes log messages to a file.
-     * Starting from version 2.0.14, this method throws LogRuntimeException in case the log can not be exported.
      * @throws LogRuntimeException if unable to open or write complete log to file
      */
     public function export(): void
