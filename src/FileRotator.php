@@ -1,32 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Yiisoft\Log\Target\File;
 
 /**
  * FileRotator takes care of rotating files.
  *
- * If the size of the file exceeds [[maxFileSize]] (in kilo-bytes), a rotation will be performed, which renames
+ * If the size of the file exceeds {@see maxFileSize} (in kilo-bytes), a rotation will be performed, which renames
  * the current file by suffixing the file name with '.1'.
  *
  * All existing files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
- * The property [[maxFiles]] specifies how many history files to keep.
+ * The property {@see maxFiles} specifies how many history files to keep.
  */
 class FileRotator implements FileRotatorInterface
 {
     /**
      * @var int maximum file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
      */
-    private $maxFileSize;
+    private int $maxFileSize;
     /**
      * @var int number of files used for rotation. Defaults to 5.
      */
-    private $maxFiles;
+    private int $maxFiles;
     /**
-     * @var int the permission to be set for newly created files.
+     * @var int|null the permission to be set for newly created files.
      * This value will be used by PHP chmod() function. No umask will be applied.
      * If not set, the permission will be determined by the current environment.
      */
-    private $fileMode;
+    private ?int $fileMode;
     /**
      * @var bool|null Whether to rotate files by copy and truncate in contrast to rotation by
      * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
@@ -39,12 +41,12 @@ class FileRotator implements FileRotatorInterface
      * the PHP documentation. By setting rotateByCopy to `true` you can work
      * around this problem.
      */
-    private $rotateByCopy;
+    private ?bool $rotateByCopy;
 
     public function __construct(int $maxFileSize = 10240, int $maxFiles = 5, int $fileMode = null, bool $rotateByCopy = null)
     {
-        $this->maxFileSize = $maxFileSize;
-        $this->maxFiles = $maxFiles;
+        $this->setMaxFileSize($maxFileSize);
+        $this->setMaxFiles($maxFiles);
         $this->fileMode = $fileMode;
 
         $this->rotateByCopy = $rotateByCopy ?? $this->isRunningOnWindows();
@@ -59,31 +61,28 @@ class FileRotator implements FileRotatorInterface
     {
         $this->maxFileSize = $maxFileSize;
         if ($this->maxFileSize < 1) {
-            $this->maxFileSize = 1;
+            throw new \InvalidArgumentException('The argument $maxFileSize cannot be lower than 1');
         }
 
         return $this;
     }
 
-    /**
-     * Gets the value of maxFileSize.
-     * @return int
-     */
     public function getMaxFileSize(): int
     {
         return $this->maxFileSize;
     }
 
-
     /**
      * Sets the value of maxFiles.
+     *
      * @param int $maxFiles
+     * @return $this
      */
     public function setMaxFiles(int $maxFiles): self
     {
         $this->maxFiles = $maxFiles;
         if ($this->maxFiles < 1) {
-            $this->maxFiles = 1;
+            throw new \InvalidArgumentException('The argument $maxFiles cannot be lower than 1');
         }
 
         return $this;
@@ -98,10 +97,6 @@ class FileRotator implements FileRotatorInterface
         return $this->maxFiles;
     }
 
-
-    /**
-     * @inheritDoc
-     */
     public function rotateFile(string $file): void
     {
         for ($i = $this->maxFiles; $i >= 0; --$i) {
@@ -114,7 +109,12 @@ class FileRotator implements FileRotatorInterface
                     continue;
                 }
                 $newFile = $file . '.' . ($i + 1);
-                $this->rotateByCopy ? $this->rotateByCopy($rotateFile, $newFile) : $this->rotateByRename($rotateFile, $newFile);
+                if ($this->rotateByCopy) {
+                    $this->rotateByCopy($rotateFile, $newFile);
+                } else {
+                    $this->rotateByRename($rotateFile, $newFile);
+                }
+
                 if ($i === 0) {
                     $this->clearFile($rotateFile);
                 }
@@ -128,7 +128,7 @@ class FileRotator implements FileRotatorInterface
      */
     private function clearFile(string $rotateFile): void
     {
-        if ($filePointer = @fopen($rotateFile, 'a')) {
+        if ($filePointer = @fopen($rotateFile, 'ab')) {
             @ftruncate($filePointer, 0);
             @fclose($filePointer);
         }
@@ -138,7 +138,6 @@ class FileRotator implements FileRotatorInterface
      * Copy rotated file into new file
      * @param string $rotateFile
      * @param string $newFile
-     * @param int|null $fileMode
      */
     private function rotateByCopy(string $rotateFile, string $newFile): void
     {
