@@ -12,42 +12,21 @@ use Yiisoft\Log\Target\File\FileTarget;
 
 final class FileRotatorTest extends TestCase
 {
-    /**
-     * @dataProvider booleanDataProvider()
-     * @param bool $rotateByCopy
-     */
-    public function testRotateByCopy(bool $rotateByCopy): void
+    public function testRotateByCopy(): void
     {
-        $logFile = $this->getLogFilePath();
-        $rotator = new FileRotator(1, 2, 777, $rotateByCopy);
-        $fileTarget = new FileTarget($logFile, $rotator);
-
-        $logger = new Logger([
-            'file' => $fileTarget,
-        ]);
-
-        $logger->debug(str_repeat('x', 1024));
-        $logger->flush(true);
-        self::assertFileExists($logFile);
-        self::assertFileDoesNotExist($logFile . '.1');
-
-        $nonRotatedFileContent = file_get_contents($logFile);
-
-        $logger->debug("\0");
-        $logger->flush(true);
-
-        self::assertFileExists($logFile);
-        self::assertFileExists($logFile . '.1');
-
-        self::assertEquals($nonRotatedFileContent, file_get_contents($logFile . '.1'));
+        $rotator = new FileRotator(1, 2, 777, true);
+        $this->innerTestRotate($rotator);
     }
 
-    /**
-     * @dataProvider filesCountProvider()
-     * @param int $filesCount
-     */
-    public function testRotateMaxFiles(int $filesCount): void
+    public function testRotateByRename(): void
     {
+        $rotator = new FileRotator(1, 2, 777, false);
+        $this->innerTestRotate($rotator);
+    }
+
+    public function testRotateMaxFiles(): void
+    {
+        $filesCount = 3;
         $logFile = $this->getLogFilePath();
         $rotator = new FileRotator(1, $filesCount, null, true);
         $fileTarget = new FileTarget($logFile, $rotator);
@@ -56,11 +35,11 @@ final class FileRotatorTest extends TestCase
             'file' => $fileTarget,
         ]);
 
-        foreach (range(1, $filesCount+2) as $i) {
-            /** @noinspection DisconnectedForeachInstructionInspection */
-            $logger->debug(str_repeat('x', 1024));
-            /** @noinspection DisconnectedForeachInstructionInspection */
+        $i = 0;
+        while ($i <= $filesCount + 2) {
+            $logger->debug($this->generateKilobytesOfData(1));
             $logger->flush(true);
+            $i++;
         }
 
         self::assertFileExists($logFile);
@@ -75,12 +54,9 @@ final class FileRotatorTest extends TestCase
         self::assertFileDoesNotExist("{$logFile}.{$filesCount}");
     }
 
-    /**
-     * @dataProvider filesSizesProvider()
-     * @param int $maxFileSize
-     */
-    public function testRotateMaxFileSize(int $maxFileSize): void
+    public function testRotateMaxFileSize(): void
     {
+        $maxFileSize = 10;
         $logFile = $this->getLogFilePath();
         $rotator = new FileRotator($maxFileSize, 2, null, true);
         $fileTarget = new FileTarget($logFile, $rotator);
@@ -89,7 +65,7 @@ final class FileRotatorTest extends TestCase
             'file' => $fileTarget,
         ]);
 
-        $logger->debug(str_repeat('x', $maxFileSize * 1024));
+        $logger->debug($this->generateKilobytesOfData($maxFileSize));
         $logger->flush(true);
 
         clearstatcache();
@@ -105,15 +81,16 @@ final class FileRotatorTest extends TestCase
 
     public function testMaxFileSizeLowerThanOne(): void
     {
-        $rotator = new FileRotator(-1);
-        self::assertEquals(1, $rotator->getMaxFileSize());
+        $this->expectException(\InvalidArgumentException::class);
+        new FileRotator(-1);
     }
 
     public function testSetMaxFileSizeLowerThanOne(): void
     {
         $rotator = new FileRotator();
+
+        $this->expectException(\InvalidArgumentException::class);
         $rotator->setMaxFileSize(-1);
-        self::assertEquals(1, $rotator->getMaxFileSize());
     }
 
     public function testDefaultMaxFiles(): void
@@ -124,45 +101,17 @@ final class FileRotatorTest extends TestCase
 
     public function testMaxFilesLowerThanOne(): void
     {
-        $rotator = new FileRotator(0, -1);
-        self::assertEquals(1, $rotator->getMaxFiles());
+        $this->expectException(\InvalidArgumentException::class);
+
+        new FileRotator(0, -1);
     }
 
     public function testSetMaxFilesLowerThanOne(): void
     {
         $rotator = new FileRotator();
+
+        $this->expectException(\InvalidArgumentException::class);
         $rotator->setMaxFiles(-1);
-        self::assertEquals(1, $rotator->getMaxFiles());
-    }
-
-    public function booleanDataProvider(): array
-    {
-        return [
-            [true],
-            [false],
-        ];
-    }
-
-    public function filesCountProvider(): array
-    {
-        return [
-            [1],
-            [2],
-            [3],
-            [4],
-            [10],
-        ];
-    }
-
-    public function filesSizesProvider(): array
-    {
-        return [
-            [2],
-            [5],
-            [10],
-            [20],
-            [100],
-        ];
     }
 
     protected function setUp(): void
@@ -179,5 +128,35 @@ final class FileRotatorTest extends TestCase
     private function getLogFilePath(): string
     {
         return __DIR__ . '/runtime/log/file-target-test.log';
+    }
+
+    private function generateKilobytesOfData(int $count): string
+    {
+        return str_repeat('x', $count * 1024);
+    }
+
+    private function innerTestRotate(FileRotator $rotator): void
+    {
+        $logFile = $this->getLogFilePath();
+        $fileTarget = new FileTarget($logFile, $rotator);
+
+        $logger = new Logger([
+            'file' => $fileTarget,
+        ]);
+
+        $logger->debug($this->generateKilobytesOfData(1));
+        $logger->flush(true);
+        self::assertFileExists($logFile);
+        self::assertFileDoesNotExist($logFile . '.1');
+
+        $nonRotatedFileContent = file_get_contents($logFile);
+
+        $logger->debug("x");
+        $logger->flush(true);
+
+        self::assertFileExists($logFile);
+        self::assertFileExists($logFile . '.1');
+
+        self::assertEquals($nonRotatedFileContent, file_get_contents($logFile . '.1'));
     }
 }

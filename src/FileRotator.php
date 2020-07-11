@@ -61,7 +61,7 @@ class FileRotator implements FileRotatorInterface
     {
         $this->maxFileSize = $maxFileSize;
         if ($this->maxFileSize < 1) {
-            $this->maxFileSize = 1;
+            throw new \InvalidArgumentException('The argument $maxFileSize cannot be lower than 1');
         }
 
         return $this;
@@ -85,7 +85,7 @@ class FileRotator implements FileRotatorInterface
     {
         $this->maxFiles = $maxFiles;
         if ($this->maxFiles < 1) {
-            $this->maxFiles = 1;
+            throw new \InvalidArgumentException('The argument $maxFiles cannot be lower than 1');
         }
 
         return $this;
