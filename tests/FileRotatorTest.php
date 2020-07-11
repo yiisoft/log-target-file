@@ -70,7 +70,7 @@ final class FileRotatorTest extends TestCase
             self::assertFileExists($filesName);
         }
 
-        // check that next file is not exist
+        // check that next file does not exist
         $filesCount++;
         self::assertFileDoesNotExist("{$logFile}.{$filesCount}");
     }
