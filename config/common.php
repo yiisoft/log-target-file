@@ -7,5 +7,5 @@ use Yiisoft\Log\Logger;
 use Yiisoft\Log\Target\File\FileTarget;
 
 return [
-    LoggerInterface::class => static fn(FileTarget $fileTarget) => new Logger(['file' => $fileTarget]),
+    LoggerInterface::class => static fn (FileTarget $fileTarget) => new Logger(['file' => $fileTarget]),
 ];
