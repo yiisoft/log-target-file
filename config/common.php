@@ -13,7 +13,7 @@ use Yiisoft\Log\Target\File\FileTarget;
 
 return [
     LoggerInterface::class => static fn (FileTarget $fileTarget) => new Logger(['file' => $fileTarget]),
-    FileRotatorInterface::class => function () use ($params) {
+    FileRotatorInterface::class => static function () use ($params) {
         return new FileRotator(
             $params['yiisoft/log-target-file']['file-rotator']['maxFileSize'],
             $params['yiisoft/log-target-file']['file-rotator']['maxFiles'],
