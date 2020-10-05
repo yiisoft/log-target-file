@@ -21,7 +21,7 @@ return [
             $params['yiisoft/log-target-file']['file-rotator']['rotateByCopy']
         );
     },
-    FileTarget::class => function (Aliases $aliases, FileRotatorInterface $fileRotator) use ($params) {
+    FileTarget::class => static function (Aliases $aliases, FileRotatorInterface $fileRotator) use ($params) {
         $fileTarget = new FileTarget(
             $aliases->get($params['yiisoft/log-target-file']['file-target']['file']),
             $fileRotator,
