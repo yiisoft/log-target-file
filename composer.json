@@ -25,9 +25,9 @@
         "yiisoft/log": "^3.0@dev"
     },
     "require-dev": {
-        "phan/phan": "^3.0",
-        "phpunit/phpunit": "^9.3",
-        "yiisoft/aliases": "^1.0"
+        "infection/infection": "^0.18",
+        "phpunit/phpunit": "^9.4",
+        "vimeo/psalm": "^4.0"
     },
     "autoload": {
         "psr-4": {
