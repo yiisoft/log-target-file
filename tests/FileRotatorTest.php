@@ -127,7 +127,7 @@ final class FileRotatorTest extends TestCase
 
     private function getLogFilePath(): string
     {
-        return __DIR__ . "/runtime/log/file-target-test.log";
+        return __DIR__ . '/runtime/log/file-target-test.log';
     }
 
     private function generateKilobytesOfData(int $count): string
