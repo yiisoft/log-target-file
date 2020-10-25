@@ -13,14 +13,15 @@ use Yiisoft\Log\Target\File\FileTarget;
 
 return [
     LoggerInterface::class => static fn (FileTarget $fileTarget) => new Logger(['file' => $fileTarget]),
-    FileRotatorInterface::class => static function () use ($params) {
-        return new FileRotator(
+    FileRotatorInterface::class => [
+        '__class' => FileRotator::class,
+        '__construct()' => [
             $params['yiisoft/log-target-file']['file-rotator']['maxFileSize'],
             $params['yiisoft/log-target-file']['file-rotator']['maxFiles'],
             $params['yiisoft/log-target-file']['file-rotator']['fileMode'],
             $params['yiisoft/log-target-file']['file-rotator']['rotateByCopy']
-        );
-    },
+        ]
+    ],
     FileTarget::class => static function (Aliases $aliases, FileRotatorInterface $fileRotator) use ($params) {
         $fileTarget = new FileTarget(
             $aliases->get($params['yiisoft/log-target-file']['file-target']['file']),
