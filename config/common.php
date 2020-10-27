@@ -13,24 +13,26 @@ use Yiisoft\Log\Target\File\FileTarget;
 
 return [
     LoggerInterface::class => static fn (FileTarget $fileTarget) => new Logger(['file' => $fileTarget]),
+
     FileRotatorInterface::class => [
         '__class' => FileRotator::class,
         '__construct()' => [
-            $params['yiisoft/log-target-file']['file-rotator']['maxfilesize'],
-            $params['yiisoft/log-target-file']['file-rotator']['maxfiles'],
-            $params['yiisoft/log-target-file']['file-rotator']['filemode'],
-            $params['yiisoft/log-target-file']['file-rotator']['rotatebycopy']
+            $params['yiisoft/log-target-file']['fileRotator']['maxFileSize'],
+            $params['yiisoft/log-target-file']['fileRotator']['maxFiles'],
+            $params['yiisoft/log-target-file']['fileRotator']['fileMode'],
+            $params['yiisoft/log-target-file']['fileRotator']['rotateByCopy']
         ]
     ],
+
     FileTarget::class => static function (Aliases $aliases, FileRotatorInterface $fileRotator) use ($params) {
         $fileTarget = new FileTarget(
-            $aliases->get($params['yiisoft/log-target-file']['file-target']['file']),
+            $aliases->get($params['yiisoft/log-target-file']['fileTarget']['file']),
             $fileRotator,
-            $params['yiisoft/log-target-file']['file-target']['dirMode'],
-            $params['yiisoft/log-target-file']['file-target']['fileMode']
+            $params['yiisoft/log-target-file']['fileTarget']['dirMode'],
+            $params['yiisoft/log-target-file']['fileTarget']['fileMode']
         );
 
-        $fileTarget->setLevels($params['yiisoft/log-target-file']['file-target']['levels']);
+        $fileTarget->setLevels($params['yiisoft/log-target-file']['fileTarget']['levels']);
 
         return $fileTarget;
     },
