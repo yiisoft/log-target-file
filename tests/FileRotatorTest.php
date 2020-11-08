@@ -138,7 +138,7 @@ final class FileRotatorTest extends TestCase
     private function innerTestRotate(FileRotator $rotator): void
     {
         $logFile = $this->getLogFilePath();
-        $fileTarget = new FileTarget($logFile, $rotator);
+        $fileTarget = new FileTarget($logFile, $rotator, 755);
 
         $logger = new Logger([
             'file' => $fileTarget,
