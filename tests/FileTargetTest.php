@@ -34,7 +34,7 @@ final class FileTargetTest extends TestCase
         FileHelper::removeDirectory(dirname($this->getLogFilePath()));
 
         $logFile = $this->getLogFilePath();
-        $target = new FileTarget($logFile, null, 0755, 0755);
+        $target = new FileTarget($logFile, null, 0777, 0777);
 
         $target->export();
 
@@ -48,7 +48,7 @@ final class FileTargetTest extends TestCase
         FileHelper::removeDirectory(dirname($this->getLogFilePath()));
 
         $logFile = $this->getLogFilePath();
-        $target = new FileTarget($logFile, null, 0755, 0755);
+        $target = new FileTarget($logFile, null, 0777, 0777);
         $target->setMessages([
             ['level', 'text', ['category' => 'alert', 'time' => 123]]
         ]);

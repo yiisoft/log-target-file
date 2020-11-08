@@ -14,13 +14,13 @@ final class FileRotatorTest extends TestCase
 {
     public function testRotateByCopy(): void
     {
-        $rotator = new FileRotator(1, 2, 755, true);
+        $rotator = new FileRotator(1, 2, 777, true);
         $this->innerTestRotate($rotator);
     }
 
     public function testRotateByRename(): void
     {
-        $rotator = new FileRotator(1, 2, 755, false);
+        $rotator = new FileRotator(1, 2, 777, false);
         $this->innerTestRotate($rotator);
     }
 
@@ -117,7 +117,7 @@ final class FileRotatorTest extends TestCase
     protected function setUp(): void
     {
         FileHelper::removeDirectory(dirname($this->getLogFilePath()));
-        mkdir(dirname($this->getLogFilePath()), 0755, true);
+        mkdir(dirname($this->getLogFilePath()), 0777, true);
     }
 
     protected function tearDown(): void
@@ -138,7 +138,7 @@ final class FileRotatorTest extends TestCase
     private function innerTestRotate(FileRotator $rotator): void
     {
         $logFile = $this->getLogFilePath();
-        $fileTarget = new FileTarget($logFile, $rotator, 755);
+        $fileTarget = new FileTarget($logFile, $rotator);
 
         $logger = new Logger([
             'file' => $fileTarget,
