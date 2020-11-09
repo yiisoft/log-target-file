@@ -1,31 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit
-    bootstrap="vendor/autoload.php"
-    backupGlobals="true"
-    colors="true"
-    verbose="true"
-    failOnRisky="true"
-    failOnWarning="true"
-    convertErrorsToExceptions="true"
-    convertNoticesToExceptions="true"
-    convertWarningsToExceptions="true"
-    stopOnFailure="false">
+
+<phpunit bootstrap="vendor/autoload.php"
+         colors="true"
+         verbose="true"
+         failOnRisky="true"
+         failOnWarning="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         stopOnFailure="false"
+         executionOrder="default"
+         resolveDependencies="true">
+
     <php>
-        <ini name="error_reporting" value="-1" />
+        <ini name="error_reporting" value="-1"/>
     </php>
+
     <testsuites>
-        <testsuite name="Yii Log - File Target tests">
+        <testsuite name="log-target-file">
             <directory>./tests</directory>
         </testsuite>
     </testsuites>
 
-    <filter>
-        <whitelist>
-            <directory>./</directory>
-            <exclude>
-                <directory>./tests</directory>
-                <directory>./vendor</directory>
-            </exclude>
-        </whitelist>
-    </filter>
+    <coverage>
+        <include>
+            <directory>./src</directory>
+        </include>
+    </coverage>
 </phpunit>
