@@ -14,13 +14,13 @@ final class FileRotatorTest extends TestCase
 {
     public function testRotateByCopy(): void
     {
-        $rotator = new FileRotator(1, 2, 777, true);
+        $rotator = new FileRotator(1, 2, 0777, true);
         $this->innerTestRotate($rotator);
     }
 
     public function testRotateByRename(): void
     {
-        $rotator = new FileRotator(1, 2, 777, false);
+        $rotator = new FileRotator(1, 2, 0777, false);
         $this->innerTestRotate($rotator);
     }
 
