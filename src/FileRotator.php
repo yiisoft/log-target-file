@@ -54,7 +54,9 @@ class FileRotator implements FileRotatorInterface
 
     /**
      * Sets the value of maxFileSize.
+     *
      * @param int $maxFileSize
+     *
      * @return FileRotator
      */
     public function setMaxFileSize(int $maxFileSize): self
@@ -76,6 +78,7 @@ class FileRotator implements FileRotatorInterface
      * Sets the value of maxFiles.
      *
      * @param int $maxFiles
+     *
      * @return $this
      */
     public function setMaxFiles(int $maxFiles): self
@@ -90,6 +93,7 @@ class FileRotator implements FileRotatorInterface
 
     /**
      * Gets the value of maxFiles.
+     *
      * @return int
      */
     public function getMaxFiles(): int
@@ -149,6 +153,7 @@ class FileRotator implements FileRotatorInterface
 
     /**
      * Renames rotated file into new file
+     *
      * @param string $rotateFile
      * @param string $newFile
      */

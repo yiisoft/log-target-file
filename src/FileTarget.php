@@ -54,6 +54,7 @@ class FileTarget extends Target
 
     /**
      * Writes log messages to a file.
+     *
      * @throws LogRuntimeException if unable to open or write complete log to file
      */
     public function export(): void

@@ -151,7 +151,7 @@ final class FileRotatorTest extends TestCase
 
         $nonRotatedFileContent = file_get_contents($logFile);
 
-        $logger->debug("x");
+        $logger->debug('x');
         $logger->flush(true);
 
         self::assertFileExists($logFile);
