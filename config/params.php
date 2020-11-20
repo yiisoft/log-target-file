@@ -13,16 +13,16 @@ return [
                 LogLevel::ERROR,
                 LogLevel::WARNING,
                 LogLevel::INFO,
-                LogLevel::DEBUG
+                LogLevel::DEBUG,
             ],
             'dirMode' => 0755,
-            'fileMode' => null
+            'fileMode' => null,
         ],
         'fileRotator' => [
             'maxFileSize' => 10,
             'maxFiles' => 5,
             'fileMode' => null,
-            'rotateByCopy' => null
-        ]
-    ]
+            'rotateByCopy' => null,
+        ],
+    ],
 ];

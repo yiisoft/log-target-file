@@ -20,8 +20,8 @@ return [
             $params['yiisoft/log-target-file']['fileRotator']['maxFileSize'],
             $params['yiisoft/log-target-file']['fileRotator']['maxFiles'],
             $params['yiisoft/log-target-file']['fileRotator']['fileMode'],
-            $params['yiisoft/log-target-file']['fileRotator']['rotateByCopy']
-        ]
+            $params['yiisoft/log-target-file']['fileRotator']['rotateByCopy'],
+        ],
     ],
 
     FileTarget::class => static function (Aliases $aliases, FileRotatorInterface $fileRotator) use ($params) {

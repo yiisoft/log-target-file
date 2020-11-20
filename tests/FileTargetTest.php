@@ -50,7 +50,7 @@ final class FileTargetTest extends TestCase
         $logFile = $this->getLogFilePath();
         $target = new FileTarget($logFile, null, 0777, 0777);
         $target->setMessages([
-            ['level', 'text', ['category' => 'alert', 'time' => 123]]
+            ['level', 'text', ['category' => 'alert', 'time' => 123]],
         ]);
 
         $target->export();
