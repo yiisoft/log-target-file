@@ -50,6 +50,7 @@ class FileTarget extends Target
         $this->rotator = $rotator;
         $this->dirMode = $dirMode;
         $this->fileMode = $fileMode;
+        parent::__construct();
     }
 
     /**
