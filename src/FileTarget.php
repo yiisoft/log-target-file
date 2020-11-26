@@ -66,7 +66,7 @@ class FileTarget extends Target
             FileHelper::createDirectory($logPath, $this->dirMode);
         }
 
-        $text = implode("\n", array_map([$this, 'formatMessage'], $this->getMessages())) . "\n";
+        $text = $this->formatMessages("\n");
 
         if (($fp = fopen($this->logFile, 'ab')) === false) {
             throw new LogRuntimeException("Unable to append to log file: {$this->logFile}");
