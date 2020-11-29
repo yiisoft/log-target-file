@@ -41,7 +41,7 @@ final class FileTargetTest extends TestCase
 
         self::assertDirectoryExists(dirname($logFile));
         self::assertFileExists($logFile);
-        self::assertEquals("", file_get_contents($logFile));
+        self::assertEquals('', file_get_contents($logFile));
     }
 
     public function testExportMessages(): void
