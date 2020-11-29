@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\File;
 
+use RuntimeException;
 use Yiisoft\Files\FileHelper;
-use Yiisoft\Log\LogRuntimeException;
 use Yiisoft\Log\Target;
 
 /**
@@ -56,7 +56,7 @@ class FileTarget extends Target
     /**
      * Writes log messages to a file.
      *
-     * @throws LogRuntimeException if unable to open or write complete log to file
+     * @throws RuntimeException if unable to open or write complete log to file
      */
     public function export(): void
     {
@@ -66,10 +66,10 @@ class FileTarget extends Target
             FileHelper::createDirectory($logPath, $this->dirMode);
         }
 
-        $text = implode("\n", array_map([$this, 'formatMessage'], $this->getMessages())) . "\n";
+        $text = $this->formatMessages("\n");
 
         if (($fp = fopen($this->logFile, 'ab')) === false) {
-            throw new LogRuntimeException("Unable to append to log file: {$this->logFile}");
+            throw new RuntimeException("Unable to append to log file: {$this->logFile}");
         }
 
         @flock($fp, LOCK_EX);
@@ -99,11 +99,11 @@ class FileTarget extends Target
     {
         if ($writeResult === false) {
             $error = error_get_last();
-            throw new LogRuntimeException("Unable to export log through file: {$error['message']}");
+            throw new RuntimeException("Unable to export log through file: {$error['message']}");
         }
         $textSize = strlen($text);
         if ($writeResult < $textSize) {
-            throw new LogRuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
+            throw new RuntimeException("Unable to export whole log through file! Wrote $writeResult out of $textSize bytes.");
         }
     }
 }
