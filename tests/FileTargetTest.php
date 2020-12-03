@@ -7,6 +7,7 @@ namespace Yiisoft\Log\Target\File\Tests;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 use Yiisoft\Files\FileHelper;
+use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\File\FileTarget;
 
 /**
@@ -50,13 +51,16 @@ final class FileTargetTest extends TestCase
 
         $logFile = $this->getLogFilePath();
         $target = new FileTarget($logFile, null, 0777, 0777);
-        $target->collect([[LogLevel::INFO, 'text', ['category' => 'alert', 'time' => 123]]], false);
+        $target->collect([new Message(LogLevel::INFO, 'text', ['category' => 'alert', 'time' => 123])], false);
 
         $target->export();
 
+        $expected = '1970-01-01 00:02:03.000000 [info][alert] text'
+            . "\n\nMessage context:\n\ncategory: 'alert'\ntime: 123\n\n";
+
         self::assertDirectoryExists(dirname($logFile));
         self::assertFileExists($logFile);
-        self::assertEquals("1970-01-01 00:02:03.000000 [info][alert] text\n", file_get_contents($logFile));
+        self::assertEquals($expected, file_get_contents($logFile));
     }
 
     private function getLogFilePath(): string
