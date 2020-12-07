@@ -5,19 +5,24 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\File;
 
 use InvalidArgumentException;
+use RuntimeException;
 
 use function chmod;
 use function copy;
 use function fclose;
 use function file_exists;
 use function filesize;
+use function flock;
 use function fopen;
 use function ftruncate;
 use function is_file;
 use function rename;
+use function sprintf;
 use function unlink;
 
 use const DIRECTORY_SEPARATOR;
+use const LOCK_EX;
+use const LOCK_UN;
 
 /**
  * FileRotator takes care of rotating files.
@@ -94,7 +99,8 @@ final class FileRotator implements FileRotatorInterface
                     continue;
                 }
 
-                $this->rotate($rotateFile, $file . '.' . ($i + 1));
+                $newFile = $file . '.' . ($i + 1);
+                $this->rotate($rotateFile, $newFile);
 
                 if ($i === 0) {
                     $this->clear($rotateFile);
@@ -105,7 +111,7 @@ final class FileRotator implements FileRotatorInterface
 
     public function isNeedRotateFile(string $file): bool
     {
-        return (file_exists($file) && @filesize($file) > $this->maxFileSize * 1024);
+        return (file_exists($file) && @filesize($file) > ($this->maxFileSize * 1024));
     }
 
     /***
@@ -131,14 +137,25 @@ final class FileRotator implements FileRotatorInterface
     /***
      * Clears the file without closing any other process open handles.
      *
-     * @param string $rotateFile
+     * @param string $rotateFile Rotated file.
+     *
+     * @throws RuntimeException For the log file could not be opened.
      */
     private function clear(string $rotateFile): void
     {
-        if ($filePointer = @fopen($rotateFile, 'ab')) {
-            ftruncate($filePointer, 0);
-            fclose($filePointer);
+        $filePointer = @fopen($rotateFile, 'ab');
+
+        if ($filePointer === false) {
+            throw new RuntimeException(sprintf(
+                'The log file "%s" could not be opened.',
+                $rotateFile,
+            ));
         }
+
+        flock($filePointer, LOCK_EX);
+        ftruncate($filePointer, 0);
+        flock($filePointer, LOCK_UN);
+        fclose($filePointer);
     }
 
     /**
