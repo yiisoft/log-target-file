@@ -125,7 +125,7 @@ final class FileTarget extends Target
     /**
      * Checks the written result.
      *
-     * @param int|false $writeResult The number of bytes written to the file, or FALSE if an error occurs.
+     * @param false|int $writeResult The number of bytes written to the file, or FALSE if an error occurs.
      * @param string $text The text written to the file.
      *
      * @throws RuntimeException For unable to export log through file.
