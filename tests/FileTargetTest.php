@@ -6,7 +6,6 @@ namespace Yiisoft\Log\Target\File\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
-use RuntimeException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\File\FileTarget;
@@ -67,21 +66,8 @@ final class FileTargetTest extends TestCase
         $this->assertSame($expected, file_get_contents($logFile));
     }
 
-    public function testMaxFileSizeThrowExceptionForUnableToOpenLogFile(): void
-    {
-        FileHelper::createDirectory($this->getLogDirectory(), 0777);
-        $target = new FileTarget($this->getLogDirectory() . '/\\/invalid-file');
-        $this->expectException(RuntimeException::class);
-        $target->collect([new Message(LogLevel::INFO, 'text')], true);
-    }
-
     private function getLogFilePath(): string
     {
         return __DIR__ . '/runtime/log/file-target-test.log';
-    }
-
-    private function getLogDirectory(): string
-    {
-        return __DIR__ . '/runtime/log';
     }
 }

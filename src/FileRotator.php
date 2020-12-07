@@ -122,7 +122,7 @@ final class FileRotator implements FileRotatorInterface
      */
     private function rotate(string $rotateFile, string $newFile): void
     {
-        if (!$this->rotateByCopy) {
+        if ($this->rotateByCopy !== true) {
             rename($rotateFile, $newFile);
             return;
         }
