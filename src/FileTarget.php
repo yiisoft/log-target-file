@@ -82,7 +82,7 @@ final class FileTarget extends Target
      *
      * @throws RuntimeException For unable to open or write complete log to file.
      */
-    public function export(): void
+    protected function export(): void
     {
         $logPath = dirname($this->logFile);
 

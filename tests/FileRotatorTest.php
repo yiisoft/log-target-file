@@ -11,8 +11,27 @@ use Yiisoft\Log\Logger;
 use Yiisoft\Log\Target\File\FileRotator;
 use Yiisoft\Log\Target\File\FileTarget;
 
+use function clearstatcache;
+use function dirname;
+use function file_get_contents;
+use function filesize;
+use function mkdir;
+use function range;
+use function str_repeat;
+
 final class FileRotatorTest extends TestCase
 {
+    public function setUp(): void
+    {
+        FileHelper::removeDirectory(dirname($this->getLogFilePath()));
+        mkdir(dirname($this->getLogFilePath()), 0777, true);
+    }
+
+    public function tearDown(): void
+    {
+        FileHelper::removeDirectory(dirname($this->getLogFilePath()));
+    }
+
     public function testRotateByCopy(): void
     {
         $rotator = new FileRotator(1, 2, 0777, true);
@@ -31,10 +50,7 @@ final class FileRotatorTest extends TestCase
         $logFile = $this->getLogFilePath();
         $rotator = new FileRotator(1, $filesCount, null, true);
         $fileTarget = new FileTarget($logFile, $rotator);
-
-        $logger = new Logger([
-            'file' => $fileTarget,
-        ]);
+        $logger = new Logger([$fileTarget]);
 
         $i = 0;
         while ($i <= $filesCount + 2) {
@@ -43,16 +59,16 @@ final class FileRotatorTest extends TestCase
             $i++;
         }
 
-        self::assertFileExists($logFile);
+        $this->assertFileExists($logFile);
 
         foreach (range(1, $filesCount) as $counter) {
             $filesName = $counter !== 1 ? $logFile . '.' . ($counter - 1) : $logFile;
-            self::assertFileExists($filesName);
+            $this->assertFileExists($filesName);
         }
 
         // check that next file does not exist
         $filesCount++;
-        self::assertFileDoesNotExist("{$logFile}.{$filesCount}");
+        $this->assertFileDoesNotExist("{$logFile}.{$filesCount}");
     }
 
     public function testRotateMaxFileSize(): void
@@ -61,46 +77,34 @@ final class FileRotatorTest extends TestCase
         $logFile = $this->getLogFilePath();
         $rotator = new FileRotator($maxFileSize, 2, null, true);
         $fileTarget = new FileTarget($logFile, $rotator);
-
-        $logger = new Logger([
-            'file' => $fileTarget,
-        ]);
+        $logger = new Logger([$fileTarget]);
 
         $logger->debug($this->generateKilobytesOfData($maxFileSize));
         $logger->flush(true);
 
         clearstatcache();
-        self::assertFileExists($logFile);
-        self::assertGreaterThan($maxFileSize, filesize($logFile) / 1024);
+        $this->assertFileExists($logFile);
+        $this->assertTrue($rotator->isNeedRotateFile($logFile));
+        $this->assertGreaterThan($maxFileSize, filesize($logFile) / 1024);
     }
 
-    public function testDefaultMaxFileSize(): void
+    public function testIsNeedRotateFileWithDefaultMaxFileSize(): void
     {
         $rotator = new FileRotator();
         $this->assertFalse($rotator->isNeedRotateFile('not-found-file'));
+        $this->assertFalse($rotator->isNeedRotateFile($this->getLogFilePath()));
     }
 
-    public function testMaxFileSizeLowerThanOne(): void
+    public function testMaxFileSizeThrowExceptionForLowerThanOne(): void
     {
         $this->expectException(InvalidArgumentException::class);
         new FileRotator(0);
     }
 
-    public function testMaxFilesLowerThanOne(): void
+    public function testMaxFilesThrowExceptionForLowerThanOne(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         new FileRotator(1, 0);
-    }
-
-    protected function setUp(): void
-    {
-        FileHelper::removeDirectory(dirname($this->getLogFilePath()));
-        mkdir(dirname($this->getLogFilePath()), 0777, true);
-    }
-
-    protected function tearDown(): void
-    {
-        FileHelper::removeDirectory(dirname($this->getLogFilePath()));
     }
 
     private function getLogFilePath(): string
@@ -117,24 +121,19 @@ final class FileRotatorTest extends TestCase
     {
         $logFile = $this->getLogFilePath();
         $fileTarget = new FileTarget($logFile, $rotator);
-
-        $logger = new Logger([
-            'file' => $fileTarget,
-        ]);
+        $logger = new Logger([$fileTarget]);
 
         $logger->debug($this->generateKilobytesOfData(1));
         $logger->flush(true);
-        self::assertFileExists($logFile);
-        self::assertFileDoesNotExist($logFile . '.1');
+        $this->assertFileExists($logFile);
+        $this->assertFileDoesNotExist($logFile . '.1');
 
         $nonRotatedFileContent = file_get_contents($logFile);
-
         $logger->debug('x');
         $logger->flush(true);
 
-        self::assertFileExists($logFile);
-        self::assertFileExists($logFile . '.1');
-
-        self::assertEquals($nonRotatedFileContent, file_get_contents($logFile . '.1'));
+        $this->assertFileExists($logFile);
+        $this->assertFileExists($logFile . '.1');
+        $this->assertSame($nonRotatedFileContent, file_get_contents($logFile . '.1'));
     }
 }
