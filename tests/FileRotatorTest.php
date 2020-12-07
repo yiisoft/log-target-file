@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Yiisoft\Log\Target\File\Tests;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Log\Logger;
@@ -76,42 +77,19 @@ final class FileRotatorTest extends TestCase
     public function testDefaultMaxFileSize(): void
     {
         $rotator = new FileRotator();
-        self::assertEquals(10240, $rotator->getMaxFileSize());
+        $this->assertFalse($rotator->isNeedRotateFile('not-found-file'));
     }
 
     public function testMaxFileSizeLowerThanOne(): void
     {
-        $this->expectException(\InvalidArgumentException::class);
-        new FileRotator(-1);
-    }
-
-    public function testSetMaxFileSizeLowerThanOne(): void
-    {
-        $rotator = new FileRotator();
-
-        $this->expectException(\InvalidArgumentException::class);
-        $rotator->setMaxFileSize(-1);
-    }
-
-    public function testDefaultMaxFiles(): void
-    {
-        $rotator = new FileRotator();
-        self::assertEquals(5, $rotator->getMaxFiles());
+        $this->expectException(InvalidArgumentException::class);
+        new FileRotator(0);
     }
 
     public function testMaxFilesLowerThanOne(): void
     {
         $this->expectException(\InvalidArgumentException::class);
-
-        new FileRotator(0, -1);
-    }
-
-    public function testSetMaxFilesLowerThanOne(): void
-    {
-        $rotator = new FileRotator();
-
-        $this->expectException(\InvalidArgumentException::class);
-        $rotator->setMaxFiles(-1);
+        new FileRotator(1, 0);
     }
 
     protected function setUp(): void
