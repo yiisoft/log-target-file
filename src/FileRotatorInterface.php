@@ -12,14 +12,16 @@ interface FileRotatorInterface
     /**
      * Rotates files.
      *
-     * @param string $file
+     * @param string $file The log file for rotation.
      */
     public function rotateFile(string $file): void;
 
     /**
-     * Get maximum file size, in kilo-bytes.
+     * Checks whether the file should be rotated.
      *
-     * @return int
+     * @param string $file The log file for rotation.
+     *
+     * @return bool Whether you should rotate the file.
      */
-    public function getMaxFileSize(): int;
+    public function shouldRotateFile(string $file): bool;
 }

@@ -10,57 +10,60 @@ use Yiisoft\Files\FileHelper;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\File\FileTarget;
 
-/**
- * @group log
- */
+use function dirname;
+use function file_get_contents;
+
 final class FileTargetTest extends TestCase
 {
-    /**
-     * Tests that log directory isn't created during init process
-     *
-     * @see https://github.com/yiisoft/yii2/issues/15662
-     */
-    public function testInit(): void
+    public function setUp(): void
     {
         FileHelper::removeDirectory(dirname($this->getLogFilePath()));
-        $logFile = $this->getLogFilePath();
-        new FileTarget($logFile);
-        self::assertFileDoesNotExist(
-            dirname($logFile),
-            'Log directory should not be created during init process'
-        );
     }
 
-    public function testExportEmptyFile(): void
+    public function testExportWithEmptyMessages(): void
     {
-        FileHelper::removeDirectory(dirname($this->getLogFilePath()));
-
         $logFile = $this->getLogFilePath();
         $target = new FileTarget($logFile, null, 0777, 0777);
+        $target->collect([], true);
 
-        $target->export();
-
-        self::assertDirectoryExists(dirname($logFile));
-        self::assertFileExists($logFile);
-        self::assertEquals('', file_get_contents($logFile));
+        $this->assertFileDoesNotExist($logFile);
+        $this->assertDirectoryDoesNotExist(dirname($logFile));
     }
 
-    public function testExportMessages(): void
+    public function testExportOneMessageWithDefaultFormat(): void
     {
-        FileHelper::removeDirectory(dirname($this->getLogFilePath()));
-
         $logFile = $this->getLogFilePath();
         $target = new FileTarget($logFile, null, 0777, 0777);
-        $target->collect([new Message(LogLevel::INFO, 'text', ['category' => 'alert', 'time' => 123])], false);
-
-        $target->export();
+        $target->collect([new Message(LogLevel::INFO, 'text', ['category' => 'alert', 'time' => 123])], true);
 
         $expected = '1970-01-01 00:02:03.000000 [info][alert] text'
             . "\n\nMessage context:\n\ncategory: 'alert'\ntime: 123\n\n";
 
-        self::assertDirectoryExists(dirname($logFile));
-        self::assertFileExists($logFile);
-        self::assertEquals($expected, file_get_contents($logFile));
+        $this->assertDirectoryExists(dirname($logFile));
+        $this->assertFileExists($logFile);
+        $this->assertSame($expected, file_get_contents($logFile));
+    }
+
+    public function testExportMessagesWithSetFormat(): void
+    {
+        $logFile = $this->getLogFilePath();
+        $target = new FileTarget($logFile, null, 0777, 0777);
+        $target->setFormat(function (Message $message) {
+            return "[{$message->level()}][{$message->context('category')}] {$message->message()}";
+        });
+        $target->collect(
+            [
+                new Message(LogLevel::INFO, 'text-1', ['category' => 'category-1']),
+                new Message(LogLevel::INFO, 'text-2', ['category' => 'category-2']),
+                new Message(LogLevel::INFO, 'text-3', ['category' => 'category-3', 'time' => 123]),
+            ],
+            true
+        );
+        $expected = "[info][category-1] text-1\n[info][category-2] text-2\n[info][category-3] text-3\n";
+
+        $this->assertDirectoryExists(dirname($logFile));
+        $this->assertFileExists($logFile);
+        $this->assertSame($expected, file_get_contents($logFile));
     }
 
     private function getLogFilePath(): string
