@@ -104,7 +104,7 @@ final class FileTarget extends Target
             clearstatcache();
         }
 
-        if ($this->rotator !== null && $this->rotator->isNeedRotateFile($this->logFile)) {
+        if ($this->rotator !== null && $this->rotator->shouldRotateFile($this->logFile)) {
             flock($filePointer, LOCK_UN);
             fclose($filePointer);
             $this->rotator->rotateFile($this->logFile);

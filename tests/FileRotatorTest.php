@@ -84,15 +84,15 @@ final class FileRotatorTest extends TestCase
 
         clearstatcache();
         $this->assertFileExists($logFile);
-        $this->assertTrue($rotator->isNeedRotateFile($logFile));
+        $this->assertTrue($rotator->shouldRotateFile($logFile));
         $this->assertGreaterThan($maxFileSize, filesize($logFile) / 1024);
     }
 
-    public function testIsNeedRotateFileWithDefaultMaxFileSize(): void
+    public function testIsShouldRotateFileWithDefaultMaxFileSize(): void
     {
         $rotator = new FileRotator();
-        $this->assertFalse($rotator->isNeedRotateFile('not-found-file'));
-        $this->assertFalse($rotator->isNeedRotateFile($this->getLogFilePath()));
+        $this->assertFalse($rotator->shouldRotateFile('not-found-file'));
+        $this->assertFalse($rotator->shouldRotateFile($this->getLogFilePath()));
     }
 
     public function testMaxFileSizeThrowExceptionForLowerThanOne(): void

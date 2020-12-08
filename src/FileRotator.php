@@ -109,7 +109,7 @@ final class FileRotator implements FileRotatorInterface
         }
     }
 
-    public function isNeedRotateFile(string $file): bool
+    public function shouldRotateFile(string $file): bool
     {
         return file_exists($file) && @filesize($file) > ($this->maxFileSize * 1024);
     }

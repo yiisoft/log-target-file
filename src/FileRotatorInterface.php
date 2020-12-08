@@ -17,11 +17,11 @@ interface FileRotatorInterface
     public function rotateFile(string $file): void;
 
     /**
-     * Checks whether the file needs to be rotated.
+     * Checks whether the file should be rotated.
      *
      * @param string $file The log file for rotation.
      *
-     * @return bool Whether you need to rotate the file.
+     * @return bool Whether you should rotate the file.
      */
-    public function isNeedRotateFile(string $file): bool;
+    public function shouldRotateFile(string $file): bool;
 }
