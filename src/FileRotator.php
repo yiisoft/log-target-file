@@ -138,7 +138,6 @@ final class FileRotator implements FileRotatorInterface
             }
 
             $this->rotate($rotateFile, $newFile);
-            $this->compress($newFile);
 
             if ($i === 0) {
                 $this->clear($rotateFile);
@@ -159,15 +158,19 @@ final class FileRotator implements FileRotatorInterface
      */
     private function rotate(string $rotateFile, string $newFile): void
     {
-        if ($this->rotateByCopy !== true) {
+        if ($this->rotateByCopy === true) {
+            copy($rotateFile, $newFile);
+        } else {
             $this->safeRemove($newFile);
             rename($rotateFile, $newFile);
-            return;
         }
 
-        copy($rotateFile, $newFile);
+        if ($this->compressRotatedFiles && !$this->isCompressed($newFile)) {
+            $this->compress($newFile);
+            $newFile .= self::COMPRESS_EXTENSION;
+        }
 
-        if ($this->fileMode !== null && (!$this->compressRotatedFiles || $this->isCompressed($newFile))) {
+        if ($this->fileMode !== null) {
             chmod($newFile, $this->fileMode);
         }
     }
@@ -179,10 +182,6 @@ final class FileRotator implements FileRotatorInterface
      */
     private function compress(string $file): void
     {
-        if (!$this->compressRotatedFiles || $this->isCompressed($file)) {
-            return;
-        }
-
         $filePointer = FileHelper::openFile($file, 'rb');
         flock($filePointer, LOCK_SH);
         $gzFile = $file . self::COMPRESS_EXTENSION;
@@ -196,10 +195,6 @@ final class FileRotator implements FileRotatorInterface
         fclose($filePointer);
         gzclose($gzFilePointer);
         @unlink($file);
-
-        if ($this->fileMode !== null) {
-            chmod($gzFile, $this->fileMode);
-        }
     }
 
     /***
