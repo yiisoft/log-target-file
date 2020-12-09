@@ -6,10 +6,6 @@
     <br>
 </p>
 
-This library provides the File target for the [yiisoft/log] library.
-
-[yiisoft/log]: https://github.com/yiisoft/log
-
 [![Latest Stable Version](https://poser.pugx.org/yiisoft/log-target-file/v/stable.png)](https://packagist.org/packages/yiisoft/log-target-file)
 [![Total Downloads](https://poser.pugx.org/yiisoft/log-target-file/downloads.png)](https://packagist.org/packages/yiisoft/log-target-file)
 [![Build status](https://github.com/yiisoft/log-target-file/workflows/build/badge.svg)](https://github.com/yiisoft/log-target-file/actions?query=workflow%3Abuild)
@@ -19,7 +15,73 @@ This library provides the File target for the [yiisoft/log] library.
 [![static analysis](https://github.com/yiisoft/log-target-file/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/log-target-file/actions?query=workflow%3A%22static+analysis%22)
 [![type-coverage](https://shepherd.dev/github/yiisoft/log-target-file/coverage.svg)](https://shepherd.dev/github/yiisoft/log-target-file)
 
-## Testing
+This package provides the File target for the [yiisoft/log](https://github.com/yiisoft/log). The target:
+
+- records log messages in a file
+- allows you to configure log files rotation
+- provides the ability to compress rotated log files
+
+## Installation
+
+The package could be installed with composer:
+
+```
+composer install yiisoft/log-target-file
+```
+
+## General usage
+
+Creating a rotator:
+
+```php
+$rotator = new \Yiisoft\Log\Target\File\FileRotator(
+    $maxFileSize,
+    $maxFiles,
+    $fileMode,
+    $rotateByCopy,
+    $compressRotatedFiles
+);
+```
+
+- `$maxFileSize (int)` - The maximum file size, in kilo-bytes. Defaults to `10240`, meaning 10MB.
+- `$maxFiles (int)` - The number of files used for rotation. Defaults to `5`.
+- `$fileMode (int|null)` - The permission to be set for newly created files. Defaults to `null`.
+- `$rotateByCopy (bool|null)` - Whether to rotate files by copy and truncate in contrast to rotation by renaming files.
+  Defaults to `true` for Windows systems that do not play well with rename on open files.
+  The default for other systems is `false`, as rotation by renaming is slightly faster.
+- `$compressRotatedFiles (bool)` - Whether to compress rotated files with gzip. Defaults to `false`.
+
+Creating a target:
+
+```php
+$fileTarget = new \Yiisoft\Log\Target\File\FileTarget(
+    $logFile,
+    $rotator,
+    $dirMode,
+    $fileMode
+);
+```
+
+- `$logFile (string)` - The log file path. Defaults to `/tmp/app.log`.
+- `$rotator (\Yiisoft\Log\Target\File\FileRotatorInterface|null)` - Defaults to `null`,
+  which means that log files will not be rotated.
+- `$dirMode (int)` - The permission to be set for newly created directories. Defaults to `0775`.
+- `$fileMode (int|null)` - The permission to be set for newly created log files. Defaults to `null`.
+
+Creating a logger:
+
+```php
+$logger = new \Yiisoft\Log\Logger([$fileTarget]);
+```
+
+For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
+
+For use in the [Yii framework](http://www.yiiframework.com/), see the configuration files:
+
+- [`config/common.php`](https://github.com/yiisoft/log-target-file/blob/master/config/common.php)
+- [`config/params.php`](https://github.com/yiisoft/log-target-file/blob/master/config/params.php)
+
+See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
 
 ### Unit testing
 
@@ -63,4 +125,3 @@ The Yii Logging Library - File Target is free software. It is released under the
 Please see [`LICENSE`](./LICENSE.md) for more information.
 
 Maintained by [Yii Software](https://www.yiiframework.com/).
-
