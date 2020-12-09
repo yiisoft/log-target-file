@@ -16,7 +16,6 @@ use function fclose;
 use function file_exists;
 use function file_put_contents;
 use function flock;
-use function fopen;
 use function fwrite;
 use function sprintf;
 use function strlen;
@@ -28,10 +27,13 @@ use const LOCK_UN;
 /**
  * FileTarget records log messages in a file.
  *
- * The log file is specified via {@see FileTarget::$logFile}. If {@see FileRotator} is used and the size of the log
- * file exceeds {@see FileRotator::$maxFileSize}, a rotation will be performed, which renames the current log file by
- * suffixing the file name with '.1'. All existing log files are moved backwards by one place, i.e., '.2' to '.3',
- * '.1' to '.2', and so on. The property {@see FileRotator::$maxFiles} specifies how many history files to keep.
+ * The log file is specified via {@see FileTarget::$logFile}.
+ *
+ * If {@see FileRotator} is used and the size of the log file exceeds {@see FileRotator::$maxFileSize},
+ * a rotation will be performed, which renames the current log file by suffixing the file name with '.1'.
+ * All existing log files are moved backwards by one place, i.e., '.2' to '.3', '.1' to '.2', and so on.
+ * If compression is enabled {@see FileRotator::$compressRotatedFiles}, the rotated files will be compressed
+ * into the '.gz' format. The property {@see FileRotator::$maxFiles} specifies how many history files to keep.
  */
 final class FileTarget extends Target
 {
@@ -77,11 +79,6 @@ final class FileTarget extends Target
         parent::__construct();
     }
 
-    /**
-     * Writes log messages to a file.
-     *
-     * @throws RuntimeException For unable to open or write complete log to file.
-     */
     protected function export(): void
     {
         $logPath = dirname($this->logFile);
@@ -91,11 +88,7 @@ final class FileTarget extends Target
         }
 
         $text = $this->formatMessages("\n");
-
-        if (($filePointer = @fopen($this->logFile, 'ab')) === false) {
-            throw new RuntimeException(sprintf('The log file "%s" could not be opened.', $this->logFile));
-        }
-
+        $filePointer = FileHelper::openFile($this->logFile, 'ab');
         flock($filePointer, LOCK_EX);
 
         if ($this->rotator !== null) {

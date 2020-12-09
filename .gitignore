@@ -22,6 +22,3 @@ phpunit.phar
 /phpunit.xml
 # phpunit cache
 .phpunit.result.cache
-
-# tests runtime
-/runtime

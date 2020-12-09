@@ -6,16 +6,24 @@ namespace Yiisoft\Log\Target\File\Tests;
 
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
+use RuntimeException;
 use Yiisoft\Files\FileHelper;
 use Yiisoft\Log\Message;
 use Yiisoft\Log\Target\File\FileTarget;
 
 use function dirname;
+use function chmod;
 use function file_get_contents;
+use function file_put_contents;
 
 final class FileTargetTest extends TestCase
 {
     public function setUp(): void
+    {
+        FileHelper::removeDirectory(dirname($this->getLogFilePath()));
+    }
+
+    public function tearDown(): void
     {
         FileHelper::removeDirectory(dirname($this->getLogFilePath()));
     }
@@ -64,6 +72,18 @@ final class FileTargetTest extends TestCase
         $this->assertDirectoryExists(dirname($logFile));
         $this->assertFileExists($logFile);
         $this->assertSame($expected, file_get_contents($logFile));
+    }
+
+    public function testExportThrowExceptionForNotWritableFile(): void
+    {
+        $logFile = $this->getLogFilePath();
+        FileHelper::createDirectory(dirname($logFile), 0777);
+        file_put_contents($logFile, '');
+        chmod($logFile, 0444);
+        $target = new FileTarget($logFile, null, 0777, 0777);
+
+        $this->expectException(RuntimeException::class);
+        $target->collect([new Message(LogLevel::INFO, 'text')], true);
     }
 
     private function getLogFilePath(): string

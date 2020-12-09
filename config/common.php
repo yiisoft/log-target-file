@@ -12,7 +12,7 @@ use Yiisoft\Log\Target\File\FileTarget;
 /* @var $params array */
 
 return [
-    LoggerInterface::class => static fn (FileTarget $fileTarget) => new Logger(['file' => $fileTarget]),
+    LoggerInterface::class => static fn (FileTarget $fileTarget) => new Logger([$fileTarget]),
 
     FileRotatorInterface::class => [
         '__class' => FileRotator::class,
@@ -21,6 +21,7 @@ return [
             $params['yiisoft/log-target-file']['fileRotator']['maxFiles'],
             $params['yiisoft/log-target-file']['fileRotator']['fileMode'],
             $params['yiisoft/log-target-file']['fileRotator']['rotateByCopy'],
+            $params['yiisoft/log-target-file']['fileRotator']['compressRotatedFiles'],
         ],
     ],
 
@@ -29,7 +30,7 @@ return [
             $aliases->get($params['yiisoft/log-target-file']['fileTarget']['file']),
             $fileRotator,
             $params['yiisoft/log-target-file']['fileTarget']['dirMode'],
-            $params['yiisoft/log-target-file']['fileTarget']['fileMode']
+            $params['yiisoft/log-target-file']['fileTarget']['fileMode'],
         );
 
         $fileTarget->setLevels($params['yiisoft/log-target-file']['fileTarget']['levels']);

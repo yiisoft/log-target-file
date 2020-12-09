@@ -23,6 +23,7 @@ return [
             'maxFiles' => 5,
             'fileMode' => null,
             'rotateByCopy' => null,
+            'compressRotatedFiles' => false,
         ],
     ],
 ];
