@@ -71,7 +71,7 @@ final class FileRotator implements FileRotatorInterface
      * The problem with windows systems where the [rename()](http://www.php.net/manual/en/function.rename.php)
      * function does not work with files that are opened by some process is described in a
      * [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
-     * the PHP documentation. By setting rotateByCopy to `true` you can work around this problem.
+     * the PHP documentation. By setting `rotateByCopy` to `true` you can work around this problem.
      */
     private ?bool $rotateByCopy;
 
