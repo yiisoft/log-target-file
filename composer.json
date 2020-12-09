@@ -30,6 +30,9 @@
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.2"
     },
+    "suggest": {
+        "ext-zlib": "Enabling gzip compression of rotated files."
+    },
     "autoload": {
         "psr-4": {
             "Yiisoft\\Log\\Target\\File\\": "src"

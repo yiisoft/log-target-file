@@ -32,25 +32,64 @@ final class FileRotatorTest extends TestCase
         FileHelper::removeDirectory(dirname($this->getLogFilePath()));
     }
 
-    public function testRotateByCopy(): void
+    public function rotateDataProvider(): array
     {
-        $rotator = new FileRotator(1, 2, 0777, true);
-        $this->innerTestRotate($rotator);
+        return [
+            'copy-true-compress-true' => [true,  true],
+            'copy-false-compress-true' => [false, true],
+            'copy-true-compress-false' => [true,  false],
+            'copy-false-compress-false' => [false, false],
+        ];
     }
 
-    public function testRotateByRename(): void
+    /**
+     * @dataProvider rotateDataProvider
+     *
+     * @param bool $copy
+     * @param bool $compress
+     */
+    public function testRotate(bool $copy, bool $compress): void
     {
-        $rotator = new FileRotator(1, 2, 0777, false);
-        $this->innerTestRotate($rotator);
+        $rotator = new FileRotator(1, 2, 0644, $copy, $compress);
+        $logFile = $this->getLogFilePath();
+        $fileTarget = new FileTarget($logFile, $rotator);
+        $logger = new Logger([$fileTarget]);
+        $compressExtension = $compress ? '.gz' : '';
+
+        $logger->debug($this->generateKilobytesOfData(1));
+        $logger->flush(true);
+        $this->assertFileExists($logFile);
+        $this->assertFileDoesNotExist("{$logFile}.1{$compressExtension}");
+
+        $nonRotatedFileContent = file_get_contents($logFile);
+        $logger->debug('x');
+        $logger->flush(true);
+
+        $this->assertFileExists($logFile);
+        $this->assertFileExists("{$logFile}.1{$compressExtension}");
+
+        if ($compress) {
+            $this->assertFileDoesNotExist($logFile . '.1');
+        } else {
+            $this->assertSame($nonRotatedFileContent, file_get_contents($logFile . '.1'));
+            $this->assertFileDoesNotExist($logFile . '.1.gz');
+        }
     }
 
-    public function testRotateMaxFiles(): void
+    /**
+     * @dataProvider rotateDataProvider
+     *
+     * @param bool $copy
+     * @param bool $compress
+     */
+    public function testRotateMaxFiles(bool $copy, bool $compress): void
     {
         $filesCount = 3;
         $logFile = $this->getLogFilePath();
-        $rotator = new FileRotator(1, $filesCount, null, true);
+        $rotator = new FileRotator(1, $filesCount, null, $copy, $compress);
         $fileTarget = new FileTarget($logFile, $rotator);
         $logger = new Logger([$fileTarget]);
+        $compressExtension = $compress ? '.gz' : '';
 
         $i = 0;
         while ($i <= $filesCount + 2) {
@@ -62,20 +101,26 @@ final class FileRotatorTest extends TestCase
         $this->assertFileExists($logFile);
 
         foreach (range(1, $filesCount) as $counter) {
-            $filesName = $counter !== 1 ? $logFile . '.' . ($counter - 1) : $logFile;
+            $filesName = $counter !== 1 ? $logFile . '.' . ($counter - 1) . $compressExtension : $logFile;
             $this->assertFileExists($filesName);
         }
 
         // check that next file does not exist
         $filesCount++;
-        $this->assertFileDoesNotExist("{$logFile}.{$filesCount}");
+        $this->assertFileDoesNotExist("{$logFile}.{$filesCount}{$compressExtension}");
     }
 
-    public function testRotateMaxFileSize(): void
+    /**
+     * @dataProvider rotateDataProvider
+     *
+     * @param bool $copy
+     * @param bool $compress
+     */
+    public function testRotateMaxFileSize(bool $copy, bool $compress): void
     {
         $maxFileSize = 10;
         $logFile = $this->getLogFilePath();
-        $rotator = new FileRotator($maxFileSize, 2, null, true);
+        $rotator = new FileRotator($maxFileSize, 2, null, $copy, $compress);
         $fileTarget = new FileTarget($logFile, $rotator);
         $logger = new Logger([$fileTarget]);
 
@@ -115,25 +160,5 @@ final class FileRotatorTest extends TestCase
     private function generateKilobytesOfData(int $count): string
     {
         return str_repeat('x', $count * 1024);
-    }
-
-    private function innerTestRotate(FileRotator $rotator): void
-    {
-        $logFile = $this->getLogFilePath();
-        $fileTarget = new FileTarget($logFile, $rotator);
-        $logger = new Logger([$fileTarget]);
-
-        $logger->debug($this->generateKilobytesOfData(1));
-        $logger->flush(true);
-        $this->assertFileExists($logFile);
-        $this->assertFileDoesNotExist($logFile . '.1');
-
-        $nonRotatedFileContent = file_get_contents($logFile);
-        $logger->debug('x');
-        $logger->flush(true);
-
-        $this->assertFileExists($logFile);
-        $this->assertFileExists($logFile . '.1');
-        $this->assertSame($nonRotatedFileContent, file_get_contents($logFile . '.1'));
     }
 }
