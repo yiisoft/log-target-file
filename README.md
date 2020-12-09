@@ -15,7 +15,7 @@
 [![static analysis](https://github.com/yiisoft/log-target-file/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/log-target-file/actions?query=workflow%3A%22static+analysis%22)
 [![type-coverage](https://shepherd.dev/github/yiisoft/log-target-file/coverage.svg)](https://shepherd.dev/github/yiisoft/log-target-file)
 
-This package provides the File target for the [yiisoft/log](https://github.com/yiisoft/log) library:
+This package provides the File target for the [yiisoft/log](https://github.com/yiisoft/log). The target:
 
 - records log messages in a file
 - allows you to configure log files rotation
@@ -125,4 +125,3 @@ The Yii Logging Library - File Target is free software. It is released under the
 Please see [`LICENSE`](./LICENSE.md) for more information.
 
 Maintained by [Yii Software](https://www.yiiframework.com/).
-
