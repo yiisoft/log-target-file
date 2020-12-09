@@ -64,21 +64,19 @@ final class FileRotator implements FileRotatorInterface
     private ?int $fileMode;
 
     /**
-     * @var bool|null Whether to rotate files by copy and truncate in contrast to rotation by
-     * renaming files. Defaults to `true` to be more compatible with log tailers and is windows
-     * systems which do not play well with rename on open files. Rotation by renaming however is
-     * a bit faster.
+     * @var bool|null Whether to rotate files by copy and truncate in contrast to rotation by renaming files.
+     * Defaults to `true` for Windows systems that do not play well with rename on open files.
+     * The default for other systems is `false`, as rotation by renaming is slightly faster.
      *
      * The problem with windows systems where the [rename()](http://www.php.net/manual/en/function.rename.php)
      * function does not work with files that are opened by some process is described in a
      * [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
-     * the PHP documentation. By setting rotateByCopy to `true` you can work
-     * around this problem.
+     * the PHP documentation. By setting rotateByCopy to `true` you can work around this problem.
      */
     private ?bool $rotateByCopy;
 
     /**
-     * @var bool Whether or not to compress rotated files with gzip. Defaults to `false`.
+     * @var bool Whether to compress rotated files with gzip. Defaults to `false`.
      *
      * If compression is enabled, the rotated files will be compressed into the '.gz' format.
      */
@@ -89,7 +87,7 @@ final class FileRotator implements FileRotatorInterface
      * @param int $maxFiles The number of files used for rotation. Defaults to 5.
      * @param int|null $fileMode The permission to be set for newly created files.
      * @param bool|null $rotateByCopy Whether to rotate files by copying and truncating or renaming them.
-     * @param bool $compressRotatedFiles Whether or not to compress rotated files with gzip.
+     * @param bool $compressRotatedFiles Whether to compress rotated files with gzip.
      */
     public function __construct(
         int $maxFileSize = 10240,
