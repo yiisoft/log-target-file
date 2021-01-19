@@ -26,7 +26,7 @@ This package provides the File target for the [yiisoft/log](https://github.com/y
 The package could be installed with composer:
 
 ```
-composer install yiisoft/log-target-file
+composer require yiisoft/log-target-file
 ```
 
 ## General usage
