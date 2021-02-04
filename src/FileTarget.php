@@ -84,7 +84,7 @@ final class FileTarget extends Target
         $logPath = dirname($this->logFile);
 
         if (!file_exists($logPath)) {
-            FileHelper::createDirectory($logPath, $this->dirMode);
+            FileHelper::ensureDirectory($logPath, $this->dirMode);
         }
 
         $text = $this->formatMessages("\n");

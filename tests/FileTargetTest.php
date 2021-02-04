@@ -77,7 +77,7 @@ final class FileTargetTest extends TestCase
     public function testExportThrowExceptionForNotWritableFile(): void
     {
         $logFile = $this->getLogFilePath();
-        FileHelper::createDirectory(dirname($logFile), 0777);
+        FileHelper::ensureDirectory(dirname($logFile), 0777);
         file_put_contents($logFile, '');
         chmod($logFile, 0444);
         $target = new FileTarget($logFile, null, 0777, 0777);
