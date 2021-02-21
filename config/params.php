@@ -19,7 +19,7 @@ return [
             'fileMode' => null,
         ],
         'fileRotator' => [
-            'maxFileSize' => 10,
+            'maxFileSize' => 10240,
             'maxFiles' => 5,
             'fileMode' => null,
             'rotateByCopy' => null,
