@@ -3,7 +3,7 @@
 
 ## 1.0.1 under development
 
-- no changes in this release.
+- Chg: Replace the default maximum file size for file rotation to `10` megabytes in `params.php`. (devanych)
 
 ## 1.0.0 February 11, 2021
 
