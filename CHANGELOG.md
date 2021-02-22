@@ -1,7 +1,7 @@
 # Yii Log - File Target Change Log
 
 
-## 1.0.1 under development
+## 1.0.1 February 22, 2021
 
 - Chg #29: Replace the default maximum file size for file rotation to `10` megabytes in `params.php` (devanych)
 
