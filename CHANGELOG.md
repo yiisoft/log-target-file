@@ -1,6 +1,11 @@
 # Yii Log - File Target Change Log
 
 
+## 1.0.4 under development
+
+- no changes in this release.
+
+
 ## 1.0.3 April 13, 2021
 
 - Chg: Adjust config for yiisoft/factory changes (vjik, samdark)
