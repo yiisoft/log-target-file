@@ -1,10 +1,9 @@
 # Yii Log - File Target Change Log
 
 
-## 1.0.4 under development
+## 1.0.4 August 26, 2021
 
 - Bug #35: Remove `Psr\Log\LoggerInterface` definition from configuration for using multiple targets to application (devanych)
-
 
 ## 1.0.3 April 13, 2021
 
