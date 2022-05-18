@@ -118,12 +118,12 @@ final class FileTarget extends Target
     /**
      * Checks the written result.
      *
-     * @param false|int $writeResult The number of bytes written to the file, or FALSE if an error occurs.
+     * @param bool|int $writeResult The number of bytes written to the file, or FALSE if an error occurs.
      * @param string $text The text written to the file.
      *
      * @throws RuntimeException For unable to export log through file.
      */
-    private function checkWrittenResult($writeResult, string $text): void
+    private function checkWrittenResult(bool|int $writeResult, string $text): void
     {
         if ($writeResult === false) {
             throw new RuntimeException(sprintf(
