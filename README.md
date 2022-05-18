@@ -23,7 +23,7 @@ This package provides the File target for the [yiisoft/log](https://github.com/y
 
 ## Requirements
 
-- PHP 7.4 or higher.
+- PHP 8.0 or higher.
 
 ## Installation
 
