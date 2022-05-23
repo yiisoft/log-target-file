@@ -123,7 +123,7 @@ final class FileTarget extends Target
      *
      * @throws RuntimeException For unable to export log through file.
      */
-    private function checkWrittenResult($writeResult, string $text): void
+    private function checkWrittenResult(false|int $writeResult, string $text): void
     {
         if ($writeResult === false) {
             throw new RuntimeException(sprintf(
