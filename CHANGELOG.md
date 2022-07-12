@@ -2,8 +2,7 @@
 
 ## 1.1.1 under development
 
-- no changes in this release.
-
+- Chg #40: Add support for `yiisoft/files` of version `^2.0`
 
 ## 1.1.0 May 23, 2022
 
