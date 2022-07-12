@@ -35,22 +35,19 @@ final class FileRotatorTest extends TestCase
     public function rotateDataProvider(): array
     {
         return [
-            'copy-true-compress-true' => [true,  true],
-            'copy-false-compress-true' => [false, true],
-            'copy-true-compress-false' => [true,  false],
-            'copy-false-compress-false' => [false, false],
+            'compress-true' => [true],
+            'compress-false' => [false],
         ];
     }
 
     /**
      * @dataProvider rotateDataProvider
      *
-     * @param bool $copy
      * @param bool $compress
      */
-    public function testRotate(bool $copy, bool $compress): void
+    public function testRotate(bool $compress): void
     {
-        $rotator = new FileRotator(1, 2, 0644, $copy, $compress);
+        $rotator = new FileRotator(1, 2, 0644, $compress);
         $logFile = $this->getLogFilePath();
         $fileTarget = new FileTarget($logFile, $rotator);
         $logger = new Logger([$fileTarget]);
@@ -79,14 +76,13 @@ final class FileRotatorTest extends TestCase
     /**
      * @dataProvider rotateDataProvider
      *
-     * @param bool $copy
      * @param bool $compress
      */
-    public function testRotateMaxFiles(bool $copy, bool $compress): void
+    public function testRotateMaxFiles(bool $compress): void
     {
         $filesCount = 3;
         $logFile = $this->getLogFilePath();
-        $rotator = new FileRotator(1, $filesCount, null, $copy, $compress);
+        $rotator = new FileRotator(1, $filesCount, null, $compress);
         $fileTarget = new FileTarget($logFile, $rotator);
         $logger = new Logger([$fileTarget]);
         $compressExtension = $compress ? '.gz' : '';
@@ -113,14 +109,13 @@ final class FileRotatorTest extends TestCase
     /**
      * @dataProvider rotateDataProvider
      *
-     * @param bool $copy
      * @param bool $compress
      */
-    public function testRotateMaxFileSize(bool $copy, bool $compress): void
+    public function testRotateMaxFileSize(bool $compress): void
     {
         $maxFileSize = 10;
         $logFile = $this->getLogFilePath();
-        $rotator = new FileRotator($maxFileSize, 2, null, $copy, $compress);
+        $rotator = new FileRotator($maxFileSize, 2, null, $compress);
         $fileTarget = new FileTarget($logFile, $rotator);
         $logger = new Logger([$fileTarget]);
 
