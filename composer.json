@@ -20,6 +20,7 @@
     },
     "require": {
         "php": "^8.0",
+        "ext-zlib": "*",
         "yiisoft/files": "^1.0|^2.0",
         "yiisoft/log": "^2.0"
     },
