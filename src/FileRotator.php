@@ -9,7 +9,6 @@ use RuntimeException;
 use Yiisoft\Files\FileHelper;
 
 use function chmod;
-use function copy;
 use function extension_loaded;
 use function fclose;
 use function feof;
@@ -19,6 +18,7 @@ use function flock;
 use function fread;
 use function ftruncate;
 use function is_file;
+use function rename;
 use function sprintf;
 use function substr;
 use function unlink;
@@ -132,14 +132,15 @@ final class FileRotator implements FileRotatorInterface
     }
 
     /***
-     * Copies or renames rotated file into new file.
+     * Renames rotated file into new file.
      *
      * @param string $rotateFile
      * @param string $newFile
      */
     private function rotate(string $rotateFile, string $newFile): void
     {
-        copy($rotateFile, $newFile);
+        $this->safeRemove($newFile);
+        rename($rotateFile, $newFile);
 
         if ($this->compressRotatedFiles && !$this->isCompressed($newFile)) {
             $this->compress($newFile);
