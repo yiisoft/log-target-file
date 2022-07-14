@@ -4,6 +4,7 @@
 
 - Bug #38: Drop `rotateByCopy` and make it the default
 - Chg #40: Add support for `yiisoft/files` of version `^2.0`
+- Chg #40: Add support for `yiisoft/files` of version `^2.0` (@DplusG)
 
 ## 1.1.0 May 23, 2022
 
