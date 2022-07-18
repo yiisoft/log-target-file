@@ -1,10 +1,10 @@
 # Yii Log - File Target Change Log
 
-## 1.1.1 under development
+## 2.0.0 July 18, 2022
 
+- Enh #40: Add support for `yiisoft/files` of version `^2.0` (@DplusG)
 - Bug #38: Drop `rotateByCopy` and make it the default (@DplusG)
 - Bug #43: Add `ext-zlib` to composer requirements (@DplusG)
-- Enh #40: Add support for `yiisoft/files` of version `^2.0` (@DplusG)
 
 ## 1.1.0 May 23, 2022
 
