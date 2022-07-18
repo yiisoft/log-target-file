@@ -42,7 +42,6 @@ $rotator = new \Yiisoft\Log\Target\File\FileRotator(
     $maxFileSize,
     $maxFiles,
     $fileMode,
-    $rotateByCopy,
     $compressRotatedFiles
 );
 ```
@@ -50,9 +49,6 @@ $rotator = new \Yiisoft\Log\Target\File\FileRotator(
 - `$maxFileSize (int)` - The maximum file size, in kilo-bytes. Defaults to `10240`, meaning 10MB.
 - `$maxFiles (int)` - The number of files used for rotation. Defaults to `5`.
 - `$fileMode (int|null)` - The permission to be set for newly created files. Defaults to `null`.
-- `$rotateByCopy (bool|null)` - Whether to rotate files by copy and truncate in contrast to rotation by renaming files.
-  Defaults to `true` for Windows systems that do not play well with rename on open files.
-  The default for other systems is `false`, as rotation by renaming is slightly faster.
 - `$compressRotatedFiles (bool)` - Whether to compress rotated files with gzip. Defaults to `false`.
 
 Creating a target:

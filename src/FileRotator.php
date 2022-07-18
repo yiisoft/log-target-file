@@ -9,7 +9,6 @@ use RuntimeException;
 use Yiisoft\Files\FileHelper;
 
 use function chmod;
-use function copy;
 use function extension_loaded;
 use function fclose;
 use function feof;
@@ -24,7 +23,6 @@ use function sprintf;
 use function substr;
 use function unlink;
 
-use const DIRECTORY_SEPARATOR;
 use const LOCK_EX;
 use const LOCK_SH;
 use const LOCK_UN;
@@ -64,18 +62,6 @@ final class FileRotator implements FileRotatorInterface
     private ?int $fileMode;
 
     /**
-     * @var bool|null Whether to rotate files by copy and truncate in contrast to rotation by renaming files.
-     * Defaults to `true` for Windows systems that do not play well with rename on open files.
-     * The default for other systems is `false`, as rotation by renaming is slightly faster.
-     *
-     * The problem with windows systems where the [rename()](http://www.php.net/manual/en/function.rename.php)
-     * function does not work with files that are opened by some process is described in a
-     * [comment by Martin Pelletier](http://www.php.net/manual/en/function.rename.php#102274) in
-     * the PHP documentation. By setting `rotateByCopy` to `true` you can work around this problem.
-     */
-    private ?bool $rotateByCopy;
-
-    /**
      * @var bool Whether to compress rotated files with gzip. Defaults to `false`.
      *
      * If compression is enabled, the rotated files will be compressed into the '.gz' format.
@@ -86,14 +72,12 @@ final class FileRotator implements FileRotatorInterface
      * @param int $maxFileSize The maximum file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
      * @param int $maxFiles The number of files used for rotation. Defaults to 5.
      * @param int|null $fileMode The permission to be set for newly created files.
-     * @param bool|null $rotateByCopy Whether to rotate files by copying and truncating or renaming them.
      * @param bool $compressRotatedFiles Whether to compress rotated files with gzip.
      */
     public function __construct(
         int $maxFileSize = 10240,
         int $maxFiles = 5,
         int $fileMode = null,
-        bool $rotateByCopy = null,
         bool $compressRotatedFiles = false
     ) {
         $this->checkCannotBeLowerThanOne($maxFileSize, '$maxFileSize');
@@ -102,7 +86,6 @@ final class FileRotator implements FileRotatorInterface
         $this->maxFileSize = $maxFileSize;
         $this->maxFiles = $maxFiles;
         $this->fileMode = $fileMode;
-        $this->rotateByCopy = $rotateByCopy ?? $this->isRunningOnWindows();
 
         if ($compressRotatedFiles && !extension_loaded('zlib')) {
             throw new RuntimeException(sprintf(
@@ -149,19 +132,15 @@ final class FileRotator implements FileRotatorInterface
     }
 
     /***
-     * Copies or renames rotated file into new file.
+     * Renames rotated file into new file.
      *
      * @param string $rotateFile
      * @param string $newFile
      */
     private function rotate(string $rotateFile, string $newFile): void
     {
-        if ($this->rotateByCopy === true) {
-            copy($rotateFile, $newFile);
-        } else {
-            $this->safeRemove($newFile);
-            rename($rotateFile, $newFile);
-        }
+        $this->safeRemove($newFile);
+        rename($rotateFile, $newFile);
 
         if ($this->compressRotatedFiles && !$this->isCompressed($newFile)) {
             $this->compress($newFile);
@@ -232,16 +211,6 @@ final class FileRotator implements FileRotatorInterface
     private function isCompressed(string $file): bool
     {
         return substr($file, -3, 3) === self::COMPRESS_EXTENSION;
-    }
-
-    /**
-     * Whether it works on Windows OS.
-     *
-     * @return bool
-     */
-    private function isRunningOnWindows(): bool
-    {
-        return DIRECTORY_SEPARATOR === '\\';
     }
 
     /**
