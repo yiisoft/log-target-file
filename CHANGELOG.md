@@ -1,5 +1,9 @@
 # Yii Log - File Target Change Log
 
+## 2.0.1 under development
+
+- no changes in this release.
+
 ## 2.0.0 July 18, 2022
 
 - Enh #40: Add support for `yiisoft/files` of version `^2.0` (@DplusG)
