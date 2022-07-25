@@ -1,6 +1,6 @@
 # Yii Log - File Target Change Log
 
-## 2.0.1 under development
+## 2.0.1 July 25, 2022
 
 - Bug #45: Fix definitions config (@rustamwin)
 
