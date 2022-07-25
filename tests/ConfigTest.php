@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Yiisoft\Log\Target\File\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Yiisoft\Aliases\Aliases;
 use Yiisoft\Di\Container;
 use Yiisoft\Di\ContainerConfig;
 use Yiisoft\Log\Target\File\FileRotator;
@@ -28,7 +29,18 @@ final class ConfigTest extends TestCase
     {
         return new Container(
             ContainerConfig::create()->withDefinitions(
-                $this->getCommonDefinitions($params)
+                array_merge(
+                    $this->getCommonDefinitions($params),
+                    [
+                        Aliases::class => [
+                            '__construct()' => [
+                                [
+                                    '@runtime' => __DIR__ . '/runtime',
+                                ],
+                            ],
+                        ],
+                    ]
+                )
             )
         );
     }
