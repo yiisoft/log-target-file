@@ -22,7 +22,6 @@ return [
             'maxFileSize' => 10240,
             'maxFiles' => 5,
             'fileMode' => null,
-            'rotateByCopy' => null,
             'compressRotatedFiles' => false,
         ],
     ],
