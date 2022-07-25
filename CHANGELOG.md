@@ -2,7 +2,7 @@
 
 ## 2.0.1 under development
 
-- Fix #45: Fix definitions config (@rustamwin)
+- Bug #45: Fix definitions config (@rustamwin)
 
 ## 2.0.0 July 18, 2022
 
