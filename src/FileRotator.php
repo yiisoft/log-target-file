@@ -191,8 +191,6 @@ final class FileRotator implements FileRotatorInterface
 
     /**
      * Whether the file is compressed.
-     *
-     *
      */
     private function isCompressed(string $file): bool
     {

@@ -45,7 +45,7 @@ final class FileTarget extends Target
      */
     public function __construct(
         private string $logFile = '/tmp/app.log',
-        private ?\Yiisoft\Log\Target\File\FileRotatorInterface $rotator = null,
+        private ?FileRotatorInterface $rotator = null,
         private int $dirMode = 0775,
         private ?int $fileMode = null
     ) {

@@ -56,7 +56,7 @@ final class FileTargetTest extends TestCase
     {
         $logFile = $this->getLogFilePath();
         $target = new FileTarget($logFile, null, 0777, 0777);
-        $target->setFormat(fn(Message $message) => "[{$message->level()}][{$message->context('category')}] {$message->message()}");
+        $target->setFormat(fn (Message $message) => "[{$message->level()}][{$message->context('category')}] {$message->message()}");
         $target->collect(
             [
                 new Message(LogLevel::INFO, 'text-1', ['category' => 'category-1']),
