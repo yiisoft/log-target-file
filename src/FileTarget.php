@@ -38,44 +38,17 @@ use const LOCK_UN;
 final class FileTarget extends Target
 {
     /**
-     * @var string The log file path. If not set, it will use the "/tmp/app.log" file.
-     * The directory containing the log files will be automatically created if not existing.
-     */
-    private string $logFile;
-
-    /**
-     * @var int The permission to be set for newly created directories.
-     * This value will be used by PHP chmod() function. No umask will be applied.
-     * Defaults to 0775, meaning the directory is read-writable by owner and group,
-     * but read-only for other users.
-     */
-    private int $dirMode;
-
-    /**
-     * @var int|null The permission to be set for newly created log files.
-     * This value will be used by PHP chmod() function. No umask will be applied.
-     * If not set, the permission will be determined by the current environment.
-     */
-    private ?int $fileMode;
-
-    private ?FileRotatorInterface $rotator;
-
-    /**
      * @param string $logFile The log file path. If not set, it will use the "/tmp/app.log" file.
      * @param FileRotatorInterface|null $rotator The instance that takes care of rotating files.
      * @param int $dirMode The permission to be set for newly created directories.
      * @param int|null $fileMode The permission to be set for newly created log files.
      */
     public function __construct(
-        string $logFile = '/tmp/app.log',
-        FileRotatorInterface $rotator = null,
-        int $dirMode = 0775,
-        int $fileMode = null
+        private string $logFile = '/tmp/app.log',
+        private ?FileRotatorInterface $rotator = null,
+        private int $dirMode = 0775,
+        private ?int $fileMode = null
     ) {
-        $this->logFile = $logFile;
-        $this->rotator = $rotator;
-        $this->dirMode = $dirMode;
-        $this->fileMode = $fileMode;
         parent::__construct();
     }
 

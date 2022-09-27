@@ -42,8 +42,6 @@ final class FileRotatorTest extends TestCase
 
     /**
      * @dataProvider rotateDataProvider
-     *
-     * @param bool $compress
      */
     public function testRotate(bool $compress): void
     {
@@ -75,8 +73,6 @@ final class FileRotatorTest extends TestCase
 
     /**
      * @dataProvider rotateDataProvider
-     *
-     * @param bool $compress
      */
     public function testRotateMaxFiles(bool $compress): void
     {
@@ -108,8 +104,6 @@ final class FileRotatorTest extends TestCase
 
     /**
      * @dataProvider rotateDataProvider
-     *
-     * @param bool $compress
      */
     public function testRotateMaxFileSize(bool $compress): void
     {

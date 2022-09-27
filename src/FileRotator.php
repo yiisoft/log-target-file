@@ -55,13 +55,6 @@ final class FileRotator implements FileRotatorInterface
     private int $maxFiles;
 
     /**
-     * @var int|null The permission to be set for newly created files.
-     * This value will be used by PHP chmod() function. No umask will be applied.
-     * If not set, the permission will be determined by the current environment.
-     */
-    private ?int $fileMode;
-
-    /**
      * @var bool Whether to compress rotated files with gzip. Defaults to `false`.
      *
      * If compression is enabled, the rotated files will be compressed into the '.gz' format.
@@ -77,7 +70,7 @@ final class FileRotator implements FileRotatorInterface
     public function __construct(
         int $maxFileSize = 10240,
         int $maxFiles = 5,
-        int $fileMode = null,
+        private ?int $fileMode = null,
         bool $compressRotatedFiles = false
     ) {
         $this->checkCannotBeLowerThanOne($maxFileSize, '$maxFileSize');
@@ -85,7 +78,6 @@ final class FileRotator implements FileRotatorInterface
 
         $this->maxFileSize = $maxFileSize;
         $this->maxFiles = $maxFiles;
-        $this->fileMode = $fileMode;
 
         if ($compressRotatedFiles && !extension_loaded('zlib')) {
             throw new RuntimeException(sprintf(
@@ -154,8 +146,6 @@ final class FileRotator implements FileRotatorInterface
 
     /**
      * Compresses a file with gzip and renames it by appending `.gz` to the file.
-     *
-     * @param string $file
      */
     private function compress(string $file): void
     {
@@ -191,8 +181,6 @@ final class FileRotator implements FileRotatorInterface
 
     /**
      * Checks the existence of file and removes it.
-     *
-     * @param string $file
      */
     private function safeRemove(string $file): void
     {
@@ -203,10 +191,6 @@ final class FileRotator implements FileRotatorInterface
 
     /**
      * Whether the file is compressed.
-     *
-     * @param string $file
-     *
-     * @return bool
      */
     private function isCompressed(string $file): bool
     {
