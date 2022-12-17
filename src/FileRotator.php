@@ -62,9 +62,11 @@ final class FileRotator implements FileRotatorInterface
     private bool $compressRotatedFiles;
 
     /**
-     * @param int $maxFileSize The maximum file size, in kilo-bytes. Defaults to 10240, meaning 10MB.
+     * @param int $maxFileSize The maximum file size, in kilobytes. Defaults to 10240, meaning 10MB.
      * @param int $maxFiles The number of files used for rotation. Defaults to 5.
-     * @param int|null $fileMode The permission to be set for newly created files.
+     * @param int|null $fileMode The permission to be set for newly created files. This value will be used by PHP
+     * `chmod()` function. No umask will be applied. If not set, the permission will be determined by the current
+     * environment.
      * @param bool $compressRotatedFiles Whether to compress rotated files with gzip.
      */
     public function __construct(

@@ -38,10 +38,15 @@ use const LOCK_UN;
 final class FileTarget extends Target
 {
     /**
-     * @param string $logFile The log file path. If not set, it will use the "/tmp/app.log" file.
+     * @param string $logFile The log file path. If not set, it will use the "/tmp/app.log" file. The directory
+     * containing the log files will be automatically created if not existing.
      * @param FileRotatorInterface|null $rotator The instance that takes care of rotating files.
-     * @param int $dirMode The permission to be set for newly created directories.
-     * @param int|null $fileMode The permission to be set for newly created log files.
+     * @param int $dirMode The permission to be set for newly created directories. This value will be used by PHP
+     * `chmod()` function. No umask will be applied. Defaults to 0775, meaning the directory is read-writable by owner
+     * and group, but read-only for other users.
+     * @param int|null $fileMode The permission to be set for newly created log files. This value will be used by PHP
+     * `chmod()` function. No umask will be applied. If not set, the permission will be determined by the current
+     * environment.
      */
     public function __construct(
         private string $logFile = '/tmp/app.log',
