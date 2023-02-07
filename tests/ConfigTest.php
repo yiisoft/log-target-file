@@ -30,7 +30,7 @@ final class ConfigTest extends TestCase
         return new Container(
             ContainerConfig::create()->withDefinitions(
                 array_merge(
-                    $this->getCommonDefinitions($params),
+                    $this->getDiConfig($params),
                     [
                         Aliases::class => [
                             '__construct()' => [
@@ -45,12 +45,12 @@ final class ConfigTest extends TestCase
         );
     }
 
-    private function getCommonDefinitions(?array $params = null): array
+    private function getDiConfig(?array $params = null): array
     {
         if ($params === null) {
             $params = $this->getParams();
         }
-        return require dirname(__DIR__) . '/config/common.php';
+        return require dirname(__DIR__) . '/config/di.php';
     }
 
     private function getParams(): array
