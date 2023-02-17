@@ -1,6 +1,6 @@
 # Yii Log - File Target Change Log
 
-## 3.0.0 under development
+## 3.0.0 February 17, 2023
 
 - Chg #53: Adapt configuration group names to Yii conventions (@vjik)
 
