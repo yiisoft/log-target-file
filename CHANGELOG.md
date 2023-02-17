@@ -1,8 +1,8 @@
 # Yii Log - File Target Change Log
 
-## 2.0.2 under development
+## 3.0.0 under development
 
-- no changes in this release.
+- Chg #53: Adapt configuration group names to Yii conventions (@vjik)
 
 ## 2.0.1 July 25, 2022
 
