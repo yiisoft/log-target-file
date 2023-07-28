@@ -2,7 +2,7 @@
 
 ## 3.0.1 under development
 
-- no changes in this release.
+- Enh #63: Add 'categories', 'except' and 'exportInterval' setters to default config (@olegbaturin)
 
 ## 3.0.0 February 17, 2023
 
