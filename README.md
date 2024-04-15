@@ -29,7 +29,7 @@ This package provides the File target for the [yiisoft/log](https://github.com/y
 
 The package could be installed with composer:
 
-```
+```shell
 composer require yiisoft/log-target-file --prefer-dist
 ```
 
@@ -76,7 +76,7 @@ $logger = new \Yiisoft\Log\Logger([$fileTarget]);
 
 For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
 
-For use in the [Yii framework](http://www.yiiframework.com/), see the configuration files:
+For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
 
 - [`config/common.php`](https://github.com/yiisoft/log-target-file/blob/master/config/common.php)
 - [`config/params.php`](https://github.com/yiisoft/log-target-file/blob/master/config/params.php)
