@@ -74,46 +74,24 @@ Creating a logger:
 $logger = new \Yiisoft\Log\Logger([$fileTarget]);
 ```
 
-For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
+## Documentation
 
-For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
+- [Read the guides here](docs/README.md)
 
-- [`config/common.php`](https://github.com/yiisoft/log-target-file/blob/master/config/common.php)
-- [`config/params.php`](https://github.com/yiisoft/log-target-file/blob/master/config/params.php)
+Testing:
 
-See [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md) for more info.
+- More information can be found in the [Internals.](docs/internals.md)
 
-## Testing
+## Support
 
-### Unit testing
+If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/63) is a good place for that.
+You may also check out other [Yii Community Resources](https://www.yiiframework.com/community).
 
-The package is tested with [PHPUnit](https://phpunit.de/). To run tests:
-
-```shell
-./vendor/bin/phpunit
-```
-
-### Mutation testing
-
-The package tests are checked with [Infection](https://infection.github.io/) mutation framework. To run it:
-
-```shell
-./vendor/bin/infection
-```
-
-### Static analysis
-
-The code is statically analyzed with [Psalm](https://psalm.dev/). To run static analysis:
-
-```shell
-./vendor/bin/psalm
-```
-
-### Support the project
+## Support the project
 
 [![Open Collective](https://img.shields.io/badge/Open%20Collective-sponsor-7eadf1?logo=open%20collective&logoColor=7eadf1&labelColor=555555)](https://opencollective.com/yiisoft)
 
-### Follow updates
+## Follow updates
 
 [![Official website](https://img.shields.io/badge/Powered_by-Yii_Framework-green.svg?style=flat)](https://www.yiiframework.com/)
 [![Twitter](https://img.shields.io/badge/twitter-follow-1DA1F2?logo=twitter&logoColor=1DA1F2&labelColor=555555?style=flat)](https://twitter.com/yiiframework)
