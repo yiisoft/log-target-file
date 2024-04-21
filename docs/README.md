@@ -2,6 +2,7 @@
 
 - [English](#english)
 - [Português - Brasil](#português---brasil)
+- [Internals](internals.md)
 
 ## English
   
