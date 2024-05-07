@@ -27,10 +27,10 @@ This package provides the File target for the [yiisoft/log](https://github.com/y
 
 ## Installation
 
-The package could be installed with composer:
+The package could be installed with [Composer](https://getcomposer.org):
 
 ```shell
-composer require yiisoft/log-target-file --prefer-dist
+composer require yiisoft/log-target-file
 ```
 
 ## General usage
@@ -74,18 +74,26 @@ Creating a logger:
 $logger = new \Yiisoft\Log\Logger([$fileTarget]);
 ```
 
+For use in the [Yii framework](https://www.yiiframework.com/), see the configuration files:
+- [`config/di.php`](https://github.com/yiisoft/log-target-file/blob/master/config/di.php)
+- [`config/params.php`](https://github.com/yiisoft/log-target-file/blob/master/config/params.php)
+
 ## Documentation
 
-- [Read the guides here](docs/README.md)
+For a description of using the logger, see the [yiisoft/log](https://github.com/yiisoft/log) package.
 
-Testing:
-
+- [Yii guide to logging](https://github.com/yiisoft/docs/blob/master/guide/en/runtime/logging.md)
 - [Internals](docs/internals.md)
-
-## Support
 
 If you need help or have a question, the [Yii Forum](https://forum.yiiframework.com/c/yii-3-0/63) is a good place for that.
 You may also check out other [Yii Community Resources](https://www.yiiframework.com/community).
+
+## License
+
+The Yii Logging Library - File Target is free software. It is released under the terms of the BSD License.
+Please see [`LICENSE`](./LICENSE.md) for more information.
+
+Maintained by [Yii Software](https://www.yiiframework.com/).
 
 ## Support the project
 
@@ -98,10 +106,3 @@ You may also check out other [Yii Community Resources](https://www.yiiframework.
 [![Telegram](https://img.shields.io/badge/telegram-join-1DA1F2?style=flat&logo=telegram)](https://t.me/yii3en)
 [![Facebook](https://img.shields.io/badge/facebook-join-1DA1F2?style=flat&logo=facebook&logoColor=ffffff)](https://www.facebook.com/groups/yiitalk)
 [![Slack](https://img.shields.io/badge/slack-join-1DA1F2?style=flat&logo=slack)](https://yiiframework.com/go/slack)
-
-## License
-
-The Yii Logging Library - File Target is free software. It is released under the terms of the BSD License.
-Please see [`LICENSE`](./LICENSE.md) for more information.
-
-Maintained by [Yii Software](https://www.yiiframework.com/).

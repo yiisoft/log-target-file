@@ -1,4 +1,4 @@
-# Yii Log - File Target Change Log
+# Yii Logging Library - File Target Change Log
 
 ## 3.0.1 under development
 
