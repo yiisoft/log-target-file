@@ -3,6 +3,7 @@
 ## 3.0.1 under development
 
 - Enh #63: Add 'categories', 'except' and 'exportInterval' setters to default config (@olegbaturin)
+- Bug #46: Replace rotate by rename to rotate by copy (@vjik)
 
 ## 3.0.0 February 17, 2023
 
