@@ -18,7 +18,6 @@ use function flock;
 use function fread;
 use function ftruncate;
 use function is_file;
-use function rename;
 use function sprintf;
 use function substr;
 use function unlink;
@@ -126,15 +125,11 @@ final class FileRotator implements FileRotatorInterface
     }
 
     /***
-     * Renames rotated file into new file.
-     *
-     * @param string $rotateFile
-     * @param string $newFile
+     * Copy rotated file into new file.
      */
     private function rotate(string $rotateFile, string $newFile): void
     {
-        $this->safeRemove($newFile);
-        rename($rotateFile, $newFile);
+        copy($rotateFile, $newFile);
 
         if ($this->compressRotatedFiles && !$this->isCompressed($newFile)) {
             $this->compress($newFile);
