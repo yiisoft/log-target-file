@@ -47,7 +47,7 @@ final class FileTarget extends Target
      * @param int|null $fileMode The permission to be set for newly created log files. This value will be used by PHP
      * `chmod()` function. No umask will be applied. If not set, the permission will be determined by the current
      * environment.
-     * @param string[] $levels The log message levels that this target is interested in.
+     * @param string[] $levels The {@see \Psr\Log\LogLevel log message levels} that this target is interested in.
      */
     public function __construct(
         private string $logFile = '/tmp/app.log',
