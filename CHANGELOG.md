@@ -2,6 +2,7 @@
 
 ## 3.0.1 under development
 
+- New #80: Add optional `$levels` parameter to `FileTarget` constructor allowing log level filtering at instantiation (@samdark)
 - Enh #63: Add 'categories', 'except' and 'exportInterval' setters to default config (@olegbaturin)
 - Bug #46: Replace rotate by rename to rotate by copy (@vjik)
 

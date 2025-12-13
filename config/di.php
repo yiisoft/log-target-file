@@ -26,9 +26,9 @@ return [
             $fileRotator,
             $params['yiisoft/log-target-file']['fileTarget']['dirMode'],
             $params['yiisoft/log-target-file']['fileTarget']['fileMode'],
+            levels: $params['yiisoft/log-target-file']['fileTarget']['levels'],
         );
 
-        $fileTarget->setLevels($params['yiisoft/log-target-file']['fileTarget']['levels']);
         $fileTarget->setCategories($params['yiisoft/log-target-file']['fileTarget']['categories']);
         $fileTarget->setExcept($params['yiisoft/log-target-file']['fileTarget']['except']);
         $fileTarget->setExportInterval($params['yiisoft/log-target-file']['fileTarget']['exportInterval']);

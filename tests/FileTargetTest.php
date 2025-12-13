@@ -86,6 +86,29 @@ final class FileTargetTest extends TestCase
         $target->collect([new Message(LogLevel::INFO, 'text')], true);
     }
 
+    public function testSetLevelsViaConstructor(): void
+    {
+        $logFile = $this->getLogFilePath();
+        $target = new FileTarget($logFile, null, 0777, 0777, [LogLevel::ERROR, LogLevel::INFO]);
+        $target->setFormat(
+            fn (Message $message) => "[{$message->level()}] {$message->message()}"
+        );
+
+        $target->collect(
+            [
+                new Message(LogLevel::INFO, 'message-1', ['category' => 'test']),
+                new Message(LogLevel::DEBUG, 'message-2', ['category' => 'test']),
+                new Message(LogLevel::ERROR, 'message-3', ['category' => 'test']),
+            ],
+            true
+        );
+
+        $expected = "[info] message-1\n[error] message-3\n";
+
+        $this->assertFileExists($logFile);
+        $this->assertSame($expected, file_get_contents($logFile));
+    }
+
     private function getLogFilePath(): string
     {
         return __DIR__ . '/runtime/log/file-target-test.log';
