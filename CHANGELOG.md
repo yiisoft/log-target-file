@@ -1,5 +1,9 @@
 # Yii Logging Library - File Target Change Log
 
+## 3.1.1 under development
+
+- no changes in this release.
+
 ## 3.1.0 December 13, 2025
 
 - New #80: Add optional `$levels` parameter to `FileTarget` constructor allowing log level filtering at instantiation (@samdark)
