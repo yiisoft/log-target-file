@@ -33,8 +33,8 @@ jobs:
   psalm83:
     uses: yiisoft/actions/.github/workflows/psalm.yml@master
     with:
-      psalm-config: 'psalm-8.3-8.4.xml'
+      psalm-config: 'psalm-8.3.xml'
       os: >-
         ['ubuntu-latest']
       php: >-
-        ['8.3', '8.4']
+        ['8.3']
