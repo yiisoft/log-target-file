@@ -11,7 +11,7 @@
 [![Build status](https://github.com/yiisoft/log-target-file/workflows/build/badge.svg)](https://github.com/yiisoft/log-target-file/actions?query=workflow%3Abuild)
 [![Code coverage](https://codecov.io/gh/yiisoft/log-target-file/graph/badge.svg?token=OWRDVB01EH)](https://codecov.io/gh/yiisoft/log-target-file)
 [![Mutation testing badge](https://img.shields.io/endpoint?style=flat&url=https%3A%2F%2Fbadge-api.stryker-mutator.io%2Fgithub.com%2Fyiisoft%2Flog-target-file%2Fmaster)](https://dashboard.stryker-mutator.io/reports/github.com/yiisoft/log-target-file/master)
-[![static analysis](https://github.com/yiisoft/log-target-file/workflows/static%20analysis/badge.svg)](https://github.com/yiisoft/log-target-file/actions?query=workflow%3A%22static+analysis%22)
+[![Static analysis](https://github.com/yiisoft/log-target-file/actions/workflows/static.yml/badge.svg?branch=master)](https://github.com/yiisoft/log-target-file/actions/workflows/static.yml?query=branch%3Amaster)
 [![type-coverage](https://shepherd.dev/github/yiisoft/log-target-file/coverage.svg)](https://shepherd.dev/github/yiisoft/log-target-file)
 
 This package provides the File target for the [yiisoft/log](https://github.com/yiisoft/log). The target:
