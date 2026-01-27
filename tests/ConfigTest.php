@@ -12,6 +12,8 @@ use Yiisoft\Log\Target\File\FileRotator;
 use Yiisoft\Log\Target\File\FileRotatorInterface;
 use Yiisoft\Log\Target\File\FileTarget;
 
+use function dirname;
+
 final class ConfigTest extends TestCase
 {
     public function testBase(): void
@@ -39,9 +41,9 @@ final class ConfigTest extends TestCase
                                 ],
                             ],
                         ],
-                    ]
-                )
-            )
+                    ],
+                ),
+            ),
         );
     }
 
