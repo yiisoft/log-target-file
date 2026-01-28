@@ -72,7 +72,7 @@ final class FileRotator implements FileRotatorInterface
         int $maxFileSize = 10240,
         int $maxFiles = 5,
         private ?int $fileMode = null,
-        bool $compressRotatedFiles = false
+        bool $compressRotatedFiles = false,
     ) {
         $this->checkCannotBeLowerThanOne($maxFileSize, '$maxFileSize');
         $this->checkCannotBeLowerThanOne($maxFiles, '$maxFiles');

@@ -35,13 +35,15 @@
         "yiisoft/log": "^2.2"
     },
     "require-dev": {
-        "maglnet/composer-require-checker": "^4.2",
+        "bamarni/composer-bin-plugin": "^1.8.3",
+        "friendsofphp/php-cs-fixer": "^3.93",
         "phpunit/phpunit": "^9.5",
         "rector/rector": "^2.0",
         "roave/infection-static-analysis-plugin": "^1.25",
         "spatie/phpunit-watcher": "^1.23",
         "vimeo/psalm": "^4.30|^5.24",
         "yiisoft/aliases": "^3.0",
+        "yiisoft/code-style": "^1.0",
         "yiisoft/di": "^1.0"
     },
     "suggest": {
@@ -58,6 +60,11 @@
         }
     },
     "extra": {
+        "bamarni-bin": {
+            "bin-links": true,
+            "forward-command": true,
+            "target-directory": "tools"
+        },
         "config-plugin-options": {
             "source-directory": "config"
         },
@@ -69,12 +76,14 @@
     "config": {
         "sort-packages": true,
         "allow-plugins": {
+            "bamarni/composer-bin-plugin": true,
             "infection/extension-installer": true,
             "composer/package-versions-deprecated": true
         }
     },
     "scripts": {
         "test": "phpunit --testdox --no-interaction",
-        "test-watch": "phpunit-watcher watch"
+        "test-watch": "phpunit-watcher watch",
+        "cs-fix": "php-cs-fixer fix"
     }
 }

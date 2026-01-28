@@ -57,7 +57,7 @@ final class FileTargetTest extends TestCase
         $logFile = $this->getLogFilePath();
         $target = new FileTarget($logFile, null, 0777, 0777);
         $target->setFormat(
-            fn (Message $message) => "[{$message->level()}][{$message->context('category')}] {$message->message()}"
+            fn(Message $message) => "[{$message->level()}][{$message->context('category')}] {$message->message()}",
         );
         $target->collect(
             [
@@ -65,7 +65,7 @@ final class FileTargetTest extends TestCase
                 new Message(LogLevel::INFO, 'text-2', ['category' => 'category-2']),
                 new Message(LogLevel::INFO, 'text-3', ['category' => 'category-3', 'time' => 123]),
             ],
-            true
+            true,
         );
         $expected = "[info][category-1] text-1\n[info][category-2] text-2\n[info][category-3] text-3\n";
 
@@ -91,7 +91,7 @@ final class FileTargetTest extends TestCase
         $logFile = $this->getLogFilePath();
         $target = new FileTarget($logFile, null, 0777, 0777, [LogLevel::ERROR, LogLevel::INFO]);
         $target->setFormat(
-            fn (Message $message) => "[{$message->level()}] {$message->message()}"
+            fn(Message $message) => "[{$message->level()}] {$message->message()}",
         );
 
         $target->collect(
@@ -100,7 +100,7 @@ final class FileTargetTest extends TestCase
                 new Message(LogLevel::DEBUG, 'message-2', ['category' => 'test']),
                 new Message(LogLevel::ERROR, 'message-3', ['category' => 'test']),
             ],
-            true
+            true,
         );
 
         $expected = "[info] message-1\n[error] message-3\n";
