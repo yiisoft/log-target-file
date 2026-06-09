@@ -131,7 +131,7 @@ final class FileRotator implements FileRotatorInterface
      */
     private function rotate(string $rotateFile, string $newFile): void
     {
-        $mTime = @filemtime($rotateFile);
+        $mTime = filemtime($rotateFile);
         $copied = copy($rotateFile, $newFile);
 
         if ($this->compressRotatedFiles && !$this->isCompressed($newFile)) {
