@@ -3,6 +3,7 @@
 ## 3.1.1 under development
 
 - Enh #83: Explicitly import classes in "use" section (@mspirkov)
+- Bug #84: Preserve modification time of rotated log files in `FileRotator` (@terabytesoftw)
 
 ## 3.1.0 December 13, 2025
 
