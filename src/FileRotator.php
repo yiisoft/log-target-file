@@ -133,7 +133,7 @@ final class FileRotator implements FileRotatorInterface
     {
         $mTime = @filemtime($rotateFile);
 
-        copy($rotateFile, $newFile);
+        $copied = copy($rotateFile, $newFile);
 
         if ($this->compressRotatedFiles && !$this->isCompressed($newFile)) {
             $this->compress($newFile);
@@ -144,7 +144,7 @@ final class FileRotator implements FileRotatorInterface
             chmod($newFile, $this->fileMode);
         }
 
-        if ($mTime !== false) {
+        if ($copied && $mTime !== false) {
             touch($newFile, $mTime);
         }
     }
