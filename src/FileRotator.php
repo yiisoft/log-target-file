@@ -133,9 +133,7 @@ final class FileRotator implements FileRotatorInterface
     {
         $mTime = filemtime($rotateFile);
 
-        if (copy($rotateFile, $newFile) === false) {
-            return;
-        }
+        copy($rotateFile, $newFile);
 
         if ($this->compressRotatedFiles && !$this->isCompressed($newFile)) {
             $this->compress($newFile);
