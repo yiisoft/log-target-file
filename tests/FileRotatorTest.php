@@ -14,10 +14,13 @@ use Yiisoft\Log\Target\File\FileTarget;
 use function clearstatcache;
 use function dirname;
 use function file_get_contents;
+use function filemtime;
 use function filesize;
 use function mkdir;
 use function range;
 use function str_repeat;
+use function time;
+use function touch;
 
 final class FileRotatorTest extends TestCase
 {
@@ -69,6 +72,34 @@ final class FileRotatorTest extends TestCase
             $this->assertSame($nonRotatedFileContent, file_get_contents($logFile . '.1'));
             $this->assertFileDoesNotExist($logFile . '.1.gz');
         }
+    }
+
+    /**
+     * @dataProvider rotateDataProvider
+     */
+    public function testRotatePreservesModificationTime(bool $compress): void
+    {
+        $rotator = new FileRotator(1, 2, null, $compress);
+        $logFile = $this->getLogFilePath();
+        $fileTarget = new FileTarget($logFile, $rotator);
+        $logger = new Logger([$fileTarget]);
+        $compressExtension = $compress ? '.gz' : '';
+
+        $logger->debug($this->generateKilobytesOfData(1));
+        $logger->flush(true);
+
+        $expectedTime = time() - 7200;
+        touch($logFile, $expectedTime);
+        clearstatcache();
+
+        $logger->debug('x');
+        $logger->flush(true);
+
+        clearstatcache();
+
+        $rotatedFile = "{$logFile}.1{$compressExtension}";
+        $this->assertFileExists($rotatedFile);
+        $this->assertSame($expectedTime, filemtime($rotatedFile));
     }
 
     /**

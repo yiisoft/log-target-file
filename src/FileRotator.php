@@ -13,6 +13,7 @@ use function extension_loaded;
 use function fclose;
 use function feof;
 use function file_exists;
+use function filemtime;
 use function filesize;
 use function flock;
 use function fread;
@@ -20,6 +21,7 @@ use function ftruncate;
 use function is_file;
 use function sprintf;
 use function substr;
+use function touch;
 use function unlink;
 
 use const LOCK_EX;
@@ -129,6 +131,8 @@ final class FileRotator implements FileRotatorInterface
      */
     private function rotate(string $rotateFile, string $newFile): void
     {
+        $mTime = filemtime($rotateFile);
+
         copy($rotateFile, $newFile);
 
         if ($this->compressRotatedFiles && !$this->isCompressed($newFile)) {
@@ -138,6 +142,10 @@ final class FileRotator implements FileRotatorInterface
 
         if ($this->fileMode !== null) {
             chmod($newFile, $this->fileMode);
+        }
+
+        if ($mTime !== false) {
+            touch($newFile, $mTime);
         }
     }
 
