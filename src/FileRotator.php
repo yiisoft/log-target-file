@@ -157,9 +157,18 @@ final class FileRotator implements FileRotatorInterface
         $filePointer = FileHelper::openFile($file, 'rb');
         flock($filePointer, LOCK_SH);
         $gzFile = $file . self::COMPRESS_EXTENSION;
+
+        /**
+         * @var resource $gzFilePointer We assume that gzopen() will always return a resource, as we are not checking
+         * for false here.
+         */
         $gzFilePointer = gzopen($gzFile, 'wb9');
 
         while (!feof($filePointer)) {
+            /**
+             * @psalm-suppress PossiblyFalseArgument We are checking for feof() above, so fread() should not return
+             * false here.
+             */
             gzwrite($gzFilePointer, fread($filePointer, 8192));
         }
 
