@@ -2,6 +2,7 @@
 
 ## 3.1.1 under development
 
+- Enh #91: Add `psr/log` to `composer.json` require section as an explicit dependency (@vjik)
 - Enh #83: Explicitly import classes in "use" section (@mspirkov)
 - Bug #84: Preserve modification time of rotated log files in `FileRotator` (@terabytesoftw)
 
